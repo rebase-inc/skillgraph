@@ -1,8 +1,8 @@
 import Immutable from 'immutable';
 
-const LanguageSkill = Immutable.Record({ name: '', percentage: 0, technologies: Immutable.Map() });
+const LanguageSkill = Immutable.Record({ name: '', skill: 0, technologies: Immutable.Map() });
 const SKILLS = Immutable.Map({
-  python: new LanguageSkill({ name: 'Python', percentage: 70, technologies: Immutable.Map({
+  python: new LanguageSkill({ name: 'Python', skill: .70, technologies: Immutable.Map({
     standardLibrary: 80,
     sqlAlchemy: 40,
     flask: 40,
@@ -11,7 +11,7 @@ const SKILLS = Immutable.Map({
     matplotlib: 14,
     pandas: 12 })
   }),
-  javascript: new LanguageSkill({ name: 'JavaScript', percentage: 55, technologies: Immutable.Map({
+  javascript: new LanguageSkill({ name: 'JavaScript', skill: .55, technologies: Immutable.Map({
     standardLibrary: 85,
     react: 70,
     immutable: 44,
@@ -21,7 +21,7 @@ const SKILLS = Immutable.Map({
     ace: 7,
     typescript: 5 })
   }),
-  cpp: new LanguageSkill({ name: 'C++', percentage: 43, technologies: Immutable.Map({
+  cpp: new LanguageSkill({ name: 'C++', skill: .43, technologies: Immutable.Map({
     standardLibrary: 46,
     boost: 44,
     loci: 33,
@@ -29,7 +29,7 @@ const SKILLS = Immutable.Map({
     libgit2: 12,
     ace: 8 })
   }),
-  go: new LanguageSkill({ name: 'Go', percentage: 32, technologies: Immutable.Map({
+  go: new LanguageSkill({ name: 'Go', skill: .32, technologies: Immutable.Map({
     standardLibrary: 30,
     httpauth: 50,
     binpacker: 42,
@@ -37,12 +37,12 @@ const SKILLS = Immutable.Map({
     decimal: 7,
     walk: 3 })
   }),
-  css: new LanguageSkill({ name: 'CSS', percentage: 16, technologies: Immutable.Map({
+  css: new LanguageSkill({ name: 'CSS', skill: .16, technologies: Immutable.Map({
     standardLibrary: 24,
     scss: 18,
     less: 14 })
   }),
-  html: new LanguageSkill({ name: 'HTML', percentage: 12, technologies: Immutable.Map({
+  html: new LanguageSkill({ name: 'HTML', skill: .12, technologies: Immutable.Map({
     standardLibrary: 18,
     video: 12,
     file: 9 })
