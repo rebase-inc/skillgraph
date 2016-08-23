@@ -6,9 +6,9 @@ import SKILLS from './mock/skills';
 
 const COLUMN_WIDTH = 6;
 const COLUMN_HEIGHT = 60;
-const DOT_RADIUS = 2.5;
-const HORIZONTAL_SPACING = 4;
-const VERTICAL_SPACING = 4;
+const DOT_RADIUS = 1.8;
+const HORIZONTAL_SPACING = 3;
+const VERTICAL_SPACING = 3;
 
 class SkillsGraph extends Component {
   constructor(props, context) {
@@ -22,16 +22,16 @@ class SkillsGraph extends Component {
   stackTechnologies(language) {
     let total = 0;
     let sumOfTechnologies = language.technologies.reduce((sum, percentage) => { sum += percentage; return sum }, 0);
-    return language.technologies.sort((a, b) => a - b).reduce((stacked, percentage, name) => {
+    return language.technologies.sort((a, b) => b - a).reduce((stacked, percentage, name) => {
       let numCircles = Math.ceil(language.skill * COLUMN_WIDTH * COLUMN_HEIGHT * percentage / sumOfTechnologies);
       stacked.push({ name, start: total, end: total + numCircles });
-      total += numCircles + 1;
+      total += numCircles;
       return stacked;
-    }, []).reverse();
+    }, []);
   }
   componentDidMount() {
     const width = 600;
-    const height = 500;
+    const height = 400;
     const margin = { top: 50, bottom: 50, left: 50, right: 50 };
     let svg = d3.select(this.div).append('svg')
       .attr('width', width + margin.left + margin.right)
@@ -42,7 +42,8 @@ class SkillsGraph extends Component {
     let languages = this.mainGroup.selectAll('g').data(SKILLS.toArray());
     languages.exit().remove();
     languages = languages.enter().append('g').merge(languages);
-    languages.attr('data-name', data => data.name);
+    languages.attr('data-name', data => data.name)
+      .attr('transform', (data, ind) => 'translate(' +  width * (ind / SKILLS.size) + ',0)');
 
     let technologies = languages.selectAll('g').data(this.stackTechnologies);
     technologies.exit().remove();
