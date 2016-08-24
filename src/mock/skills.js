@@ -1,52 +1,74 @@
 import Immutable from 'immutable';
 
-const LanguageSkill = Immutable.Record({ name: '', skill: 0, technologies: Immutable.Map() });
-const SKILLS = Immutable.Map({
-  python: new LanguageSkill({ name: 'Python', skill: .70, technologies: Immutable.Map({
-    standardLibrary: 80,
-    sqlAlchemy: 40,
-    flask: 40,
-    numpy: 30,
-    scipy: 28,
-    matplotlib: 14,
-    pandas: 12 })
+const TechSkill = Immutable.Record({ name: '', percentile: 0.0, technologies: Immutable.List(), commits: Immutable.List() });
+const SKILLS = Immutable.List([
+  TechSkill({
+    name: 'Python',
+    percentile: .70,
+    technologies: Immutable.List([
+      TechSkill({ name: 'Standard Library', percentile: .80 }),
+      TechSkill({ name: 'SQLAlchemy', percentile: 0.40 }),
+      TechSkill({ name: 'Flask', percentile: 0.40 }),
+      TechSkill({ name: 'NumPy', percentile: 0.30 }),
+      TechSkill({ name: 'SciPy', percentile: 0.28 }),
+      TechSkill({ name: 'matplotlib', percentile: 0.14 }),
+      TechSkill({ name: 'pandas', percentile: 0.12 }),
+    ])
   }),
-  javascript: new LanguageSkill({ name: 'JavaScript', skill: .55, technologies: Immutable.Map({
-    standardLibrary: 85,
-    react: 70,
-    immutable: 44,
-    d3: 30,
-    lodash: 18,
-    jquery: 12,
-    ace: 7,
-    typescript: 5 })
+  TechSkill({
+    name: 'JavaScript',
+    percentile: .55,
+    technologies: Immutable.List([
+      TechSkill({ name: 'Standard Library', percentile: .75 }),
+      TechSkill({ name: 'React', percentile: 0.70 }),
+      TechSkill({ name: 'ImmutableJS', percentile: 0.44 }),
+      TechSkill({ name: 'd3js', percentile: 0.30 }),
+      TechSkill({ name: 'lodash', percentile: 0.18 }),
+      TechSkill({ name: 'jQuery', percentile: 0.12 }),
+      TechSkill({ name: 'TypeScript', percentile: 0.07 }),
+    ])
   }),
-  cpp: new LanguageSkill({ name: 'C++', skill: .43, technologies: Immutable.Map({
-    standardLibrary: 46,
-    boost: 44,
-    loci: 33,
-    stl: 21,
-    libgit2: 12,
-    ace: 8 })
+  TechSkill({
+    name: 'C++',
+    percentile: .43,
+    technologies: Immutable.List([
+      TechSkill({ name: 'Standard Library', percentile: .46 }),
+      TechSkill({ name: 'Boost', percentile: 0.44 }),
+      TechSkill({ name: 'Loci', percentile: 0.33 }),
+      TechSkill({ name: 'STL', percentile: 0.21 }),
+      TechSkill({ name: 'libgit2', percentile: 0.12 }),
+      TechSkill({ name: 'ACE', percentile: 0.08 }),
+    ])
   }),
-  go: new LanguageSkill({ name: 'Go', skill: .32, technologies: Immutable.Map({
-    standardLibrary: 30,
-    httpauth: 50,
-    binpacker: 42,
-    celeriac: 9,
-    decimal: 7,
-    walk: 3 })
+  TechSkill({
+    name: 'Go',
+    percentile: .32,
+    technologies: Immutable.List([
+      TechSkill({ name: 'Standard Library', percentile: .30 }),
+      TechSkill({ name: 'httpauth', percentile: 0.50 }),
+      TechSkill({ name: 'binpacker', percentile: 0.42 }),
+      TechSkill({ name: 'celeriac', percentile: 0.9 }),
+      TechSkill({ name: 'decimal', percentile: 0.07 }),
+      TechSkill({ name: 'walk', percentile: 0.06 }),
+    ])
   }),
-  css: new LanguageSkill({ name: 'CSS', skill: .16, technologies: Immutable.Map({
-    standardLibrary: 24,
-    scss: 18,
-    less: 14 })
+  TechSkill({
+    name: 'CSS',
+    percentile: .16,
+    technologies: Immutable.List([
+      TechSkill({ name: 'Standard Library', percentile: .24 }),
+      TechSkill({ name: 'SCSS', percentile: 0.18 }),
+      TechSkill({ name: 'LESS', percentile: 0.14 }),
+    ])
   }),
-  html: new LanguageSkill({ name: 'HTML', skill: .12, technologies: Immutable.Map({
-    standardLibrary: 18,
-    video: 12,
-    file: 9 })
-  })
-});
+  TechSkill({
+    name: 'HTML',
+    percentile: .16,
+    technologies: Immutable.List([
+      TechSkill({ name: 'VideoAPI', percentile: 0.18 }),
+      TechSkill({ name: 'FileAPI', percentile: 0.11 }),
+    ])
+  }),
+]);
 
 export default SKILLS;

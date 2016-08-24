@@ -4,14 +4,14 @@ import _ from 'lodash';
 
 import SKILLS from './mock/skills';
 
-const COLUMN_WIDTH = 6;
-const COLUMN_HEIGHT = 60;
+const GROUP_WIDTH = 6;
+const GROUP_HEIGHT = 60;
 const DOT_RADIUS = 1.8;
-const HORIZONTAL_SPACING = 3;
-const VERTICAL_SPACING = 3;
+const DOT_SPACING = 3;
 const COLUMN_SPACING = 45;
 const FONT_SIZE = 10;
-const COLUMN_PIXELS = COLUMN_SPACING + COLUMN_WIDTH * (2 * DOT_RADIUS + HORIZONTAL_SPACING) - HORIZONTAL_SPACING; // for convenience
+const COLUMN_PIXELS = COLUMN_SPACING + GROUP_WIDTH * (2 * DOT_RADIUS + DOT_SPACING) - DOT_SPACING; // for convenience
+const DOTS_PER_GROUP = GROUP_WIDTH * GROUP_HEIGHT;
 
 class SkillsGraph extends Component {
   constructor(props, context) {
@@ -19,20 +19,37 @@ class SkillsGraph extends Component {
     this.shouldComponentUpdate = this.shouldComponentUpdate.bind(this);
     this.componentDidMount = this.componentDidMount.bind(this);
   }
-  shouldComponentUpdate() {
+  shouldComponentUpdate(nextProps, nextState) {
+    console.log('checking');
+    console.log('state is ', state);
     return false;
   }
-  stackTechnologies(language) {
-    let total = 0;
-    let sumOfTechnologies = language.technologies.reduce((sum, percentage) => { sum += percentage; return sum }, 0);
-    let stackedTech = language.technologies.sort((a, b) => b - a).reduce((stacked, percentage, name) => {
-      let numCircles = Math.ceil(language.skill * COLUMN_WIDTH * COLUMN_HEIGHT * percentage / sumOfTechnologies);
-      stacked.push({ name, start: total, end: total + numCircles });
-      total += numCircles;
+  componentWillUpdate(prevProps, prevState) {
+    console.log('component will update');
+  }
+  // This static method takes a list of technologies and their percentiles like [{ name: 'React', : percentile: 0.75 }, ...]
+  // and converts them to a one dimensional array with "stacking", e.g.:
+  // [{ name: 'React', start: 0.0, end: 0.23 }, { name: 'Angular', start: 0.23, end: 0.42 }, ...] where
+  // SUM(0 -> k - 1) (end_k - start_k) == language.percentile
+  static stackTechnologies(language) {
+    let percentFilled = 0.0;
+    let sumOfTechnologies = language.technologies.reduce((sum, tech) => sum + tech.percentile, 0.0);
+    return language.technologies.sort((a, b) => b.percentile - a.percentile).reduce((stacked, tech) => {
+      stacked.push(Object.assign(tech, { start: percentFilled, end: percentFilled + (language.percentile * tech.percentile / sumOfTechnologies) }));
+      percentFilled += (language.percentile * tech.percentile / sumOfTechnologies);
       return stacked;
     }, []);
-    stackedTech.push({ name: '', start: total, end: COLUMN_WIDTH * COLUMN_HEIGHT }); // placeholders
-    return stackedTech;
+  }
+  static positionDot(startPercentile, endPercentile, dotNumber) {
+    let startDot = Math.floor(startPercentile * DOTS_PER_GROUP);
+    let endDot = Math.floor(endPercentile * DOTS_PER_GROUP);
+    let spacing = 2 * DOT_RADIUS + DOT_SPACING;
+
+    dotNumber %= (endDot - startDot);
+
+    let x = spacing * ((startDot + dotNumber) % GROUP_WIDTH);
+    let y = spacing * (GROUP_HEIGHT - Math.floor((startDot + dotNumber) / GROUP_WIDTH));
+    return { x, y }
   }
   componentDidMount() {
     const width = 600;
@@ -44,23 +61,24 @@ class SkillsGraph extends Component {
     this.mainGroup = svg.append('g')
       .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
-    let languages = this.mainGroup.selectAll('g').data(SKILLS.toArray());
+    let languages = this.mainGroup.selectAll('g').data(SKILLS.toJS());
     languages.exit().remove();
     languages = languages.enter().append('g').merge(languages);
     languages.attr('data-name', data => data.name)
       .attr('transform', (data, ind) => 'translate(' + ((width / 2) + COLUMN_PIXELS * (ind - SKILLS.size / 2)) + ',0)')
 
     languages.append('text')
-      .text(language => language.name.toUpperCase())
+      .text(language => language.name)
       .attr('class', 'language')
       .attr('text-anchor', 'middle')
       .attr('x', (COLUMN_PIXELS - COLUMN_SPACING) / 2)
-      .attr('y', (2 * DOT_RADIUS + VERTICAL_SPACING) * COLUMN_HEIGHT)
+      .attr('y', (2 * DOT_RADIUS + DOT_SPACING) * GROUP_HEIGHT)
       .attr('font-size', FONT_SIZE)
       .attr('fill', 'hsla(0, 0%, 85%, 1)')
-      .attr('dy', FONT_SIZE + 4 * VERTICAL_SPACING);
+      .attr('dy', FONT_SIZE + 4 * DOT_SPACING)
+      .on('click', language => this.setState({ language: language.name }));
 
-    let technologies = languages.selectAll('g').data(this.stackTechnologies);
+    let technologies = languages.selectAll('g').data(SkillsGraph.stackTechnologies);
     technologies.exit().remove();
     technologies = technologies.enter().append('g').merge(technologies);
     technologies.attr('data-name', data => data.name)
@@ -85,25 +103,29 @@ class SkillsGraph extends Component {
       .attr('class', 'technology')
       .attr('text-anchor', 'middle')
       .attr('x', (COLUMN_PIXELS - COLUMN_SPACING) / 2)
-      .attr('y', (2 * DOT_RADIUS + VERTICAL_SPACING) * COLUMN_HEIGHT)
+      .attr('y', (2 * DOT_RADIUS + DOT_SPACING) * GROUP_HEIGHT)
       .attr('font-size', FONT_SIZE)
       .attr('fill', 'none')
-      .attr('dy', FONT_SIZE + 4 * VERTICAL_SPACING);
+      .attr('dy', FONT_SIZE + 4 * DOT_SPACING);
 
-    let dots = technologies.selectAll('circle').data(data => _.range(data.start, data.end));
+    let dots = technologies.selectAll('circle')
+      .data(technology => _.range(Math.floor(DOTS_PER_GROUP * technology.start), Math.floor(DOTS_PER_GROUP * technology.end)));
     dots.exit().remove();
     dots = dots.enter().append('circle').merge(dots);
     dots.attr('r', DOT_RADIUS)
-      .attr('cx', data => (data % COLUMN_WIDTH) * (2 * DOT_RADIUS + HORIZONTAL_SPACING))
-      .attr('cy', data => (2 * DOT_RADIUS + VERTICAL_SPACING) * (COLUMN_HEIGHT - Math.floor(data / COLUMN_WIDTH)))
+      .attr('cx', function(dotIndex) {
+        let language = d3.select(this.parentNode).datum();
+        return SkillsGraph.positionDot(language.start, language.end, dotIndex).x
+      })
+      .attr('cy', function(dotIndex) {
+        let language = d3.select(this.parentNode).datum();
+        return SkillsGraph.positionDot(language.start, language.end, dotIndex).y
+      })
       .attr('stroke', 'transparent')
-      .attr('stroke-width', 10);
+      .attr('stroke-width', 10); // terrible hack
   }
   render() {
-    return (
-      <div className='skillsGraph' ref={(element) => { this.div = element }}>
-      </div>
-    );
+    return <div className='skillsGraph' ref={(element) => { this.div = element }} />;
   }
 }
 
