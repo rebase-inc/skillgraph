@@ -87,7 +87,7 @@ export class SkillsChart {
   // we're ignoring any updates to the skills for now
   update(skills, language) {
     let options = this.options; // need for inside bound functions below
-    this.languages.transition().duration(600)
+    this.languages.transition().duration(300)
       .attr('opacity', function(data) {
         if (!language || language === data.name) {
           return 1;
@@ -95,7 +95,6 @@ export class SkillsChart {
           return 0;
         }
       })
-      .transition().delay(200).duration(600)
       .attr('transform', (data, ind) => {
         if (language) {
           return 'translate(' + (this.options.width - COLUMN_PIXELS) / 2 + ',0)'
@@ -104,7 +103,7 @@ export class SkillsChart {
         }
       });
   
-    this.technologies.transition().delay(800).duration(600)
+    this.technologies.transition().duration(300)
       .attr('transform', function(data, ind) {
         let numTechnologies = d3.select(this.parentNode).datum().technologies.length;
         if (language) {
@@ -114,7 +113,7 @@ export class SkillsChart {
         }
       });
 
-    this.dots.transition().delay((d, i) => 800 + 5*DOTS_PER_GROUP - 5 * i).duration(600)
+    this.dots.transition().delay((d, i) => 0.7 * 5 * DOTS_PER_GROUP - 5 * i).duration(300)
       .attr('cx', function(dot, dotIndex) {
         let technology = d3.select(this.parentNode).datum();
         let start = language ? 0 : technology.start;
