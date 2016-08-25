@@ -63,7 +63,7 @@ const SKILLS = Immutable.List([
   }),
   TechSkill({
     name: 'HTML',
-    percentile: .16,
+    percentile: .13,
     technologies: Immutable.List([
       TechSkill({ name: 'VideoAPI', percentile: 0.18 }),
       TechSkill({ name: 'FileAPI', percentile: 0.11 }),
