@@ -18,9 +18,9 @@ export class SkillsChart {
       .attr('height', options.height + options.margin.top + options.margin.bottom);
     this.mainGroup = svg.append('g')
       .attr('transform', 'translate(' + options.margin.left + ',' + options.margin.top + ')')
-      .datum({ language: null });
+      .datum(skills);
 
-    this.languages = this.mainGroup.selectAll('g').data(skills);
+    this.languages = this.mainGroup.selectAll('g').data(d => d);
     this.languages.exit().remove();
     this.languages = this.languages.enter().append('g').merge(this.languages);
     this.languages.attr('data-name', data => data.name)
@@ -72,24 +72,8 @@ export class SkillsChart {
     this.dots.exit().remove();
     this.dots = this.dots.enter().append('circle').merge(this.dots);
     this.dots.attr('r', DOT_RADIUS)
-      .attr('cx', function(dotIndex) {
-        let technologyNode = d3.select(this.parentNode);
-        let technology = technologyNode.datum();
-        let start = technology.start;
-        let end = technology.end;
-        let column = skills.map(s => s.name).indexOf(d3.select(technologyNode.node().parentNode).datum().name);
-        let numColumns = skills.length;
-        return SkillsChart.positionDot(start, end, dotIndex, column, numColumns).x
-      })
-      .attr('cy', function(dotIndex) {
-        let technologyNode = d3.select(this.parentNode);
-        let technology = technologyNode.datum();
-        let start = technology.start;
-        let end = technology.end;
-        let column = skills.map(s => s.name).indexOf(d3.select(technologyNode.node().parentNode).datum().name);
-        let numColumns = skills.length;
-        return SkillsChart.positionDot(start, end, dotIndex, column, numColumns).y
-      })
+      .attr('cx', function(dot, dotIndex) { return SkillsChart.positionDot(this, dotIndex, null, options.height, options.width).x })
+      .attr('cy', function(dot, dotIndex) { return SkillsChart.positionDot(this, dotIndex, null, options.height, options.width).y })
       .attr('stroke', 'transparent')
       .attr('stroke-width', 10); // terrible hack
   }
@@ -100,36 +84,12 @@ export class SkillsChart {
     // .attr('opacity', data => !language || language == data.name ? 1 : 0);
     this.languages.transition().duration(language ? 800 : 1600).delay(language ? 0 : 800)
       .style('opacity', function(data) {
-        return (!language || data.name == language) ? 1 : 1e-6;
+        return (!language || data.name === language) ? 1 : 1e-6;
       });
 
     this.dots.transition().delay(d => (language ? 500 : 0) + Math.random() * 200).duration(800)
-      .attr('cx', function(dot, dotIndex) {
-        let technologyNode = d3.select(this.parentNode);
-        let languageNode = d3.select(technologyNode.node().parentNode);
-        if (language && languageNode.datum().name != language) { return 0; }
-        let technology = technologyNode.datum();
-        let start = language ? 0 : technology.start;
-        let end = language ? technology.percentile : technology.end;
-        let data = language ? languageNode.datum().technologies : skills;
-        let name = language ? technology.name : languageNode.datum().name;
-        let column = data.map(d => d.name).indexOf(name);
-        let numColumns = data.length;
-        return SkillsChart.positionDot(start, end, dotIndex, column, numColumns).x
-      })
-      .attr('cy', function(dot, dotIndex) {
-        let technologyNode = d3.select(this.parentNode);
-        let languageNode = d3.select(technologyNode.node().parentNode);
-        if (language && languageNode.datum().name != language) { return options.height }
-        let technology = technologyNode.datum();
-        let start = language ? 0 : technology.start;
-        let end = language ? technology.percentile : technology.end;
-        let data = language ? languageNode.datum().technologies : skills;
-        let name = language ? technology.name : languageNode.datum().name;
-        let column = data.map(d => d.name).indexOf(name);
-        let numColumns = data.length;
-        return SkillsChart.positionDot(start, end, dotIndex, column, numColumns).y
-      });
+      .attr('cx', function(dot, dotIndex) { return SkillsChart.positionDot(this, dotIndex, language, options.height, options.width).x })
+      .attr('cy', function(dot, dotIndex) { return SkillsChart.positionDot(this, dotIndex, language, options.height, options.width).y });
   }
   // This static method takes a list of technologies and their percentiles like [{ name: 'React', : percentile: 0.75 }, ...]
   // and converts them to a one dimensional array with "stacking", e.g.:
@@ -144,14 +104,27 @@ export class SkillsChart {
       return stacked;
     }, []);
   }
-  static positionDot(startPercentile, endPercentile, dotIndex, columnIndex, numColumns) {
-    let startDot = Math.floor(startPercentile * DOTS_PER_GROUP);
-    let endDot = Math.floor(endPercentile * DOTS_PER_GROUP);
+  static positionDot(d3node, dotIndex, selectedLanguage, height, width) {
+    let technology = d3.select(d3node.parentNode);
+    let language = d3.select(technology.node().parentNode);
+    if (selectedLanguage && language.datum().name !== selectedLanguage) {
+      return height;
+    }
+    let start = selectedLanguage ? 0 : technology.datum().start;
+    let end = selectedLanguage ? technology.datum().percentile : technology.datum().end;
+    let skills = selectedLanguage ? language.datum().technologies : d3.select(language.node().parentNode).datum();
+    let selectedSkill = selectedLanguage ? technology.datum().name : language.datum().name;
+    let columnIndex = skills.map(d => d.name).indexOf(selectedSkill);
+    let numColumns = skills.length;
+
+    let startDot = Math.floor(start * DOTS_PER_GROUP);
+    let endDot = Math.floor(end * DOTS_PER_GROUP);
     let spacing = 2 * DOT_RADIUS + DOT_SPACING;
 
     dotIndex %= (endDot - startDot);
 
-    let x = spacing * ((startDot + dotIndex) % GROUP_WIDTH) + COLUMN_PIXELS * columnIndex;
+    let offset = (width - numColumns * COLUMN_PIXELS) / 2;
+    let x = spacing * ((startDot + dotIndex) % GROUP_WIDTH) + COLUMN_PIXELS * columnIndex + offset;
     let y = spacing * (GROUP_HEIGHT - Math.floor((startDot + dotIndex) / GROUP_WIDTH));
     return { x, y }
   }

@@ -19,14 +19,14 @@ class SkillsGraph extends Component {
     return false;
   }
   componentDidMount() {
-    const options = { 
-      width: 600, 
+    const options = {
+      width: 600,
       height: 400,
-      margin: { 
-        top: 50, 
-        bottom: 50, 
-        left: 50, 
-        right: 50 
+      margin: {
+        top: 50,
+        bottom: 50,
+        left: 50,
+        right: 50
       },
     }
     this.d3chart = new graphs.SkillsChart(this.div, SKILLS.toJS(), options, this.props.selectLanguage);
