@@ -99,30 +99,6 @@ export class SkillsChart {
         ).cy
       })
 
-    this.placeholders = this.languages.selectAll('circle.placeholder')
-      .data(language => _.range(Math.floor(DOTS_PER_GROUP * language.percentile), DOTS_PER_GROUP));
-    this.placeholders.exit().remove();
-    this.placeholders = this.placeholders.enter().append('circle').merge(this.placeholders);
-    this.placeholders.attr('class', 'placeholder')
-      .style('fill', TRANSPARENT_WHITE)
-      .attr('r', DOT_RADIUS)
-      .attr('cx', function() {
-        return SkillsChart.positionDot(
-          this, // circle node
-          d3.select('g[data-name="Languages"]'),
-          options.height,
-          options.width,
-        ).cx
-      })
-      .attr('cy', function() {
-        return SkillsChart.positionDot(
-          this, // circle node
-          d3.select('g[data-name="Languages"]'),
-          options.height,
-          options.width,
-        ).cy
-      });
-
   }
   static highlightNode() {
     d3.select(this).style('fill', YELLOW);
