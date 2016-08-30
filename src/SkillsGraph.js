@@ -29,6 +29,7 @@ class SkillsGraph extends Component {
         right: 50
       },
     }
+    console.log('jsified ', SKILLS.toJS());
     this.d3chart = new graphs.SkillsChart(this.div, SKILLS.toJS(), options, this.props.selectLanguage);
   }
   render() {

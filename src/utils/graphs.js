@@ -16,11 +16,12 @@ export class SkillsChart {
     let svg = d3.select(element).append('svg')
       .attr('width', options.width + options.margin.left + options.margin.right)
       .attr('height', options.height + options.margin.top + options.margin.bottom);
-    this.mainGroup = svg.append('g')
+    let allLanguages = svg.append('g')
       .attr('transform', 'translate(' + options.margin.left + ',' + options.margin.top + ')')
-      .datum(skills);
+      .datum(skills)
+      .attr('data-name', data => data.name);
 
-    this.languages = this.mainGroup.selectAll('g').data(d => d);
+    this.languages = allLanguages.selectAll('g').data(d => d.technologies);
     this.languages.exit().remove();
     this.languages = this.languages.enter().append('g').merge(this.languages);
     this.languages.attr('data-name', data => data.name)
@@ -31,7 +32,14 @@ export class SkillsChart {
       .text(language => language.name)
       .attr('class', 'language')
       .attr('text-anchor', 'middle')
-      .attr('x', (COLUMN_PIXELS - COLUMN_SPACING) / 2)
+      .attr('x', function() {
+        return SkillsChart.positionLabel(
+          d3.select(this.parentNode), // language node
+          d3.select(d3.select(this.parentNode).node().parentNode), // Languages node
+          options.height,
+          options.width
+        ).x
+      })
       .attr('y', (2 * DOT_RADIUS + DOT_SPACING) * GROUP_HEIGHT)
       .attr('font-size', FONT_SIZE)
       .attr('fill', 'hsla(0, 0%, 85%, 1)')
@@ -61,7 +69,14 @@ export class SkillsChart {
       .text(technology => technology.name)
       .attr('class', 'technology')
       .attr('text-anchor', 'middle')
-      .attr('x', (COLUMN_PIXELS - COLUMN_SPACING) / 2)
+      .attr('x', function() {
+        return SkillsChart.positionLabel(
+          d3.select(this.parentNode), // technology node
+          d3.select('g[data-name="Languages"]'),
+          options.height,
+          options.width
+        ).x
+      })
       .attr('y', (2 * DOT_RADIUS + DOT_SPACING) * GROUP_HEIGHT)
       .attr('font-size', FONT_SIZE)
       .attr('fill', 'none')
@@ -71,9 +86,24 @@ export class SkillsChart {
       .data(technology => _.range(0, Math.floor(DOTS_PER_GROUP * technology.percentile)));
     this.dots.exit().remove();
     this.dots = this.dots.enter().append('circle').merge(this.dots);
-    this.dots.attr('r', DOT_RADIUS)
-      .attr('cx', function(dot, dotIndex) { return SkillsChart.positionDot(this, dotIndex, null, options.height, options.width).x })
-      .attr('cy', function(dot, dotIndex) { return SkillsChart.positionDot(this, dotIndex, null, options.height, options.width).y })
+    this.dots
+      .attr('cx', function() {
+        return SkillsChart.positionDot(
+          this, // circle node
+          d3.select('g[data-name="Languages"]'),
+          options.height,
+          options.width,
+        ).cx
+      })
+      .attr('cy', function() {
+        return SkillsChart.positionDot(
+          this, // circle node
+          d3.select('g[data-name="Languages"]'),
+          options.height,
+          options.width,
+        ).cy
+      })
+      .attr('r', DOT_RADIUS)
       .attr('stroke', 'transparent')
       .attr('stroke-width', 10); // terrible hack
   }
@@ -82,14 +112,38 @@ export class SkillsChart {
     let options = this.options; // need for inside bound functions below
     //this.languages.transition().duration(00)
     // .attr('opacity', data => !language || language == data.name ? 1 : 0);
-    this.languages.transition().duration(language ? 800 : 1600).delay(language ? 0 : 800)
+    this.languages.transition().duration(language ? 500 : 1600).delay(language ? 0 : 800)
       .style('opacity', function(data) {
         return (!language || data.name === language) ? 1 : 1e-6;
       });
 
     this.dots.transition().delay(d => (language ? 500 : 0) + Math.random() * 200).duration(800)
-      .attr('cx', function(dot, dotIndex) { return SkillsChart.positionDot(this, dotIndex, language, options.height, options.width).x })
-      .attr('cy', function(dot, dotIndex) { return SkillsChart.positionDot(this, dotIndex, language, options.height, options.width).y });
+      .attr('cy', function() {
+        return SkillsChart.positionDot(
+          this, // circle node
+          language ? d3.select('g[data-name="' + language + '"]') : d3.select('g[data-name="Languages"]'),
+          options.height,
+          options.width,
+        ).cy
+      })
+      .attr('cx', function() {
+        return SkillsChart.positionDot(
+          this, // circle node
+          language ? d3.select('g[data-name="' + language + '"]') : d3.select('g[data-name="Languages"]'),
+          options.height,
+          options.width,
+        ).cx
+      })
+
+    this.technologies.selectAll('text')
+      .attr('x', function() {
+        return SkillsChart.positionLabel(
+          d3.select(this.parentNode), // technology node
+          language ? d3.select('g[data-name="' + language + '"]') : d3.select('g[data-name="Languages"]'),
+          options.height,
+          options.width
+        ).x
+      })
   }
   // This static method takes a list of technologies and their percentiles like [{ name: 'React', : percentile: 0.75 }, ...]
   // and converts them to a one dimensional array with "stacking", e.g.:
@@ -104,28 +158,41 @@ export class SkillsChart {
       return stacked;
     }, []);
   }
-  static positionDot(d3node, dotIndex, selectedLanguage, height, width) {
-    let technology = d3.select(d3node.parentNode);
-    let language = d3.select(technology.node().parentNode);
-    if (selectedLanguage && language.datum().name !== selectedLanguage) {
-      return height;
+  static positionDot(dotNode, displayedTechNode, height, width) {
+    let skills = displayedTechNode.datum().technologies;
+    let skill = d3.select(dotNode.parentNode);
+    let parentSkill = d3.select(skill.node().parentNode);
+
+    let stacked = (skills != parentSkill.datum().technologies);
+
+    let [ start, end ] = (stacked ? [ skill.datum().start, skill.datum().end ] : [ 0, skill.datum().percentile ]).map(perc => Math.floor(perc * DOTS_PER_GROUP));
+    let index = d3.select(dotNode).datum() % (end - start);
+
+    let columnIndex = skills.indexOf(stacked ? parentSkill.datum() : skill.datum());
+    let dotSpacing = 2 * DOT_RADIUS + DOT_SPACING;
+
+    let cx = dotSpacing * ((start + index) % GROUP_WIDTH) + COLUMN_PIXELS * columnIndex + (width - (skills.length + 0.5)* COLUMN_PIXELS) / 2 + COLUMN_SPACING;
+    let cy = dotSpacing * (GROUP_HEIGHT - Math.floor((start + index) / GROUP_WIDTH));
+    return { cx, cy }
+  }
+  static positionLabel(techNode, displayedTechNode, height, width) {
+    let skills = displayedTechNode.datum().technologies;
+    let skill = techNode.datum();
+    let parentSkill = d3.select(techNode.node().parentNode);
+    if (parentSkill.attr('data-name') === null) {
+      return { x: -100, y: height }
     }
-    let start = selectedLanguage ? 0 : technology.datum().start;
-    let end = selectedLanguage ? technology.datum().percentile : technology.datum().end;
-    let skills = selectedLanguage ? language.datum().technologies : d3.select(language.node().parentNode).datum();
-    let selectedSkill = selectedLanguage ? technology.datum().name : language.datum().name;
-    let columnIndex = skills.map(d => d.name).indexOf(selectedSkill);
+
+    // TODO: Come up with more robust check to see if we're at the right depth
+    if (displayedTechNode.attr('data-name') != parentSkill.attr('data-name')) {
+      return SkillsChart.positionLabel(parentSkill, displayedTechNode, height, width);
+    }
+    let columnIndex = skills.indexOf(skill);
     let numColumns = skills.length;
 
-    let startDot = Math.floor(start * DOTS_PER_GROUP);
-    let endDot = Math.floor(end * DOTS_PER_GROUP);
-    let spacing = 2 * DOT_RADIUS + DOT_SPACING;
-
-    dotIndex %= (endDot - startDot);
-
     let offset = (width - numColumns * COLUMN_PIXELS) / 2;
-    let x = spacing * ((startDot + dotIndex) % GROUP_WIDTH) + COLUMN_PIXELS * columnIndex + offset;
-    let y = spacing * (GROUP_HEIGHT - Math.floor((startDot + dotIndex) / GROUP_WIDTH));
+    let x = COLUMN_PIXELS * columnIndex + offset + COLUMN_PIXELS / 2;
+    let y = null;
     return { x, y }
   }
 }
