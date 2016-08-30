@@ -9,6 +9,9 @@ const COLUMN_SPACING = 45;
 const FONT_SIZE = 10;
 const COLUMN_PIXELS = COLUMN_SPACING + GROUP_WIDTH * (2 * DOT_RADIUS + DOT_SPACING) - DOT_SPACING; // for convenience
 const DOTS_PER_GROUP = GROUP_WIDTH * GROUP_HEIGHT;
+const WHITE = 'hsla(0, 0%, 85%, 1)';
+const TRANSPARENT_WHITE = 'hsla(0, 0%, 85%, 0.25)';
+const YELLOW = 'hsla(37, 89%, 52%, 1)';
 
 export class SkillsChart {
   constructor(element, skills, options, selectLanguage) {
@@ -42,28 +45,16 @@ export class SkillsChart {
       })
       .attr('y', (2 * DOT_RADIUS + DOT_SPACING) * GROUP_HEIGHT)
       .attr('font-size', FONT_SIZE)
-      .attr('fill', 'hsla(0, 0%, 85%, 1)')
+      .attr('fill', WHITE)
       .attr('dy', FONT_SIZE + 4 * DOT_SPACING)
 
     this.technologies = this.languages.selectAll('g').data(SkillsChart.stackTechnologies);
     this.technologies.exit().remove();
     this.technologies = this.technologies.enter().append('g').merge(this.technologies);
     this.technologies.attr('data-name', data => data.name)
-      .style('fill', data => data.name ? 'hsla(0, 0%, 85%, 1)' : 'hsla(0, 0%, 85%, 0.24)')
-      .on('mouseover', function(data) {
-        if (data.name) {
-          d3.select(this).style('fill', 'hsla(37, 89%, 52%, 1)');
-          d3.select(this.parentNode).select('.language').style('fill', 'none');
-          d3.select(this).select('.technology').style('fill', 'hsla(37, 89%, 52%, 1)');
-        }
-      })
-      .on('mouseout', function(data) {
-        if (data.name) {
-          d3.select(this).style('fill', 'hsla(0, 0%, 85%, 1)');
-          d3.select(this.parentNode).select('.language').style('fill', 'hsla(0, 0%, 85%, 1)');
-          d3.select(this).select('text').style('fill', 'none');
-        }
-      });
+      .style('fill', data => data.name ? WHITE : YELLOW)
+      .on('mouseover', SkillsChart.highlightNode)
+      .on('mouseout', SkillsChart.unhighlightNode);
 
     this.technologies.append('text')
       .text(technology => technology.name)
@@ -85,7 +76,11 @@ export class SkillsChart {
     this.dots = this.technologies.selectAll('circle')
       .data(technology => _.range(0, Math.floor(DOTS_PER_GROUP * technology.percentile)));
     this.dots.exit().remove();
-    this.dots = this.dots.enter().append('circle').merge(this.dots);
+    this.dots = this.dots.enter().append('circle').merge(this.dots)
+      .attr('r', DOT_RADIUS)
+      .attr('stroke', 'transparent')
+      .attr('stroke-width', 10); // terrible hack
+
     this.dots
       .attr('cx', function() {
         return SkillsChart.positionDot(
@@ -103,15 +98,53 @@ export class SkillsChart {
           options.width,
         ).cy
       })
+
+    this.placeholders = this.languages.selectAll('circle.placeholder')
+      .data(language => _.range(Math.floor(DOTS_PER_GROUP * language.percentile), DOTS_PER_GROUP));
+    this.placeholders.exit().remove();
+    this.placeholders = this.placeholders.enter().append('circle').merge(this.placeholders);
+    this.placeholders.attr('class', 'placeholder')
+      .style('fill', TRANSPARENT_WHITE)
       .attr('r', DOT_RADIUS)
-      .attr('stroke', 'transparent')
-      .attr('stroke-width', 10); // terrible hack
+      .attr('cx', function() {
+        return SkillsChart.positionDot(
+          this, // circle node
+          d3.select('g[data-name="Languages"]'),
+          options.height,
+          options.width,
+        ).cx
+      })
+      .attr('cy', function() {
+        return SkillsChart.positionDot(
+          this, // circle node
+          d3.select('g[data-name="Languages"]'),
+          options.height,
+          options.width,
+        ).cy
+      });
+
+  }
+  static highlightNode() {
+    d3.select(this).style('fill', YELLOW);
+    d3.select(this.parentNode).select('.language').style('fill', 'none');
+    d3.select(this).select('.technology').style('fill', YELLOW);
+  }
+  static unhighlightNode(node) {
+    d3.select(this).style('fill', WHITE);
+    d3.select(this.parentNode).select('.language').style('fill', WHITE);
+    d3.select(this).select('text').style('fill', 'none');
   }
   // we're ignoring any updates to the skills for now
   update(skills, language) {
     let options = this.options; // need for inside bound functions below
-    //this.languages.transition().duration(00)
-    // .attr('opacity', data => !language || language == data.name ? 1 : 0);
+
+    this.technologies
+      .on('mouseover', language ? null : SkillsChart.highlightNode)
+      .on('mouseout', language ? null : SkillsChart.unhighlightNode)
+      .style('fill', WHITE);
+
+    this.technologies.select('.technology').style('fill', language ? WHITE : 'none');
+
     this.languages.transition().duration(language ? 500 : 1600).delay(language ? 0 : 800)
       .style('opacity', function(data) {
         return (!language || data.name === language) ? 1 : 1e-6;
@@ -144,6 +177,7 @@ export class SkillsChart {
           options.width
         ).x
       })
+      .attr('fill', language ? WHITE : 'none')
   }
   // This static method takes a list of technologies and their percentiles like [{ name: 'React', : percentile: 0.75 }, ...]
   // and converts them to a one dimensional array with "stacking", e.g.:

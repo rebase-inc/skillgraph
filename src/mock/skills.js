@@ -12,7 +12,7 @@ const SKILLS = new TechSkill({
       technologies: Immutable.List([
         new TechSkill({ name: 'Standard Library', percentile: .80 }),
         new TechSkill({ name: 'SQLAlchemy', percentile: 0.40 }),
-        new TechSkill({ name: 'Flask', percentile: 0.40 }),
+        new TechSkill({ name: 'Flask', percentile: 0.36 }),
         new TechSkill({ name: 'NumPy', percentile: 0.30 }),
         new TechSkill({ name: 'SciPy', percentile: 0.28 }),
         new TechSkill({ name: 'matplotlib', percentile: 0.14 }),
