@@ -46,7 +46,37 @@ export class SkillsChart {
       .attr('y', (2 * DOT_RADIUS + DOT_SPACING) * GROUP_HEIGHT)
       .attr('font-size', FONT_SIZE)
       .attr('fill', WHITE)
-      .attr('dy', FONT_SIZE + 4 * DOT_SPACING)
+      .attr('dy', FONT_SIZE + 4 * DOT_SPACING);
+
+    this.placeholders = this.languages.selectAll('circle.placeholder')
+      .data(language => _.range(Math.floor(DOTS_PER_GROUP * language.percentile), DOTS_PER_GROUP));
+    this.placeholders.exit().remove();
+    this.placeholders = this.placeholders.enter().append('circle').merge(this.placeholders)
+      .attr('class', 'placeholder')
+      .style('fill', TRANSPARENT_WHITE)
+      .attr('r', DOT_RADIUS)
+      .attr('stroke', 'transparent')
+      .attr('stroke-width', 10); // terrible hack
+
+    this.placeholders
+      .attr('cx', function() {
+        return SkillsChart.positionDot(
+          this, // circle node
+          d3.select('g[data-name="Languages"]'),
+          options.height,
+          options.width,
+          false,
+        ).cx
+      })
+      .attr('cy', function() {
+        return SkillsChart.positionDot(
+          this, // circle node
+          d3.select('g[data-name="Languages"]'),
+          options.height,
+          options.width,
+          false,
+        ).cy
+      })
 
     this.technologies = this.languages.selectAll('g').data(SkillsChart.stackTechnologies);
     this.technologies.exit().remove();
@@ -168,7 +198,7 @@ export class SkillsChart {
       return stacked;
     }, []);
   }
-  static positionDot(dotNode, displayedTechNode, height, width) {
+  static positionDot(dotNode, displayedTechNode, height, width, wrap = true) {
     let skills = displayedTechNode.datum().technologies;
     let skill = d3.select(dotNode.parentNode);
     let parentSkill = d3.select(skill.node().parentNode);
@@ -176,7 +206,8 @@ export class SkillsChart {
     let stacked = (skills != parentSkill.datum().technologies);
 
     let [ start, end ] = (stacked ? [ skill.datum().start, skill.datum().end ] : [ 0, skill.datum().percentile ]).map(perc => Math.floor(perc * DOTS_PER_GROUP));
-    let index = d3.select(dotNode).datum() % (end - start);
+    let index = d3.select(dotNode).datum();
+    if (wrap) { index %= (end - start); }
 
     let columnIndex = skills.indexOf(stacked ? parentSkill.datum() : skill.datum());
     let dotSpacing = 2 * DOT_RADIUS + DOT_SPACING;

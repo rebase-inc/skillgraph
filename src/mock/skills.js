@@ -21,7 +21,7 @@ const SKILLS = new TechSkill({
     }),
     new TechSkill({
       name: 'JavaScript',
-      percentile: .55,
+      percentile: .56,
       technologies: Immutable.List([
         new TechSkill({ name: 'Standard Library', percentile: .75 }),
         new TechSkill({ name: 'React', percentile: 0.70 }),
