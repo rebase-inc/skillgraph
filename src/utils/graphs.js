@@ -24,9 +24,9 @@ export class SkillsChart {
       .datum(skills)
       .attr('data-name', data => data.name);
 
-    this.makeLanguages(); // TODO: would be nice to make this a recursive function 
-    this.makePlaceholders();
-    this.makeTechnologies(selectTechnology);
+    this.makeLanguages(selectTechnology); // TODO: would be nice to make this a recursive function 
+    this.makePlaceholders(this.languages); // This is horrible, I'm sorry.
+    this.makeTechnologies();
     this.makeDots();
   }
   static highlightNode() {
@@ -96,14 +96,14 @@ export class SkillsChart {
       .attr('dy', FONT_SIZE + 4 * DOT_SPACING);
 
   }
-  makeLanguages() {
+  makeLanguages(select) {
     const { options } = this;
     this.languages = this.mainGroup.selectAll('g').data(d => d.technologies);
     this.languages.exit().remove();
     this.languages = this.languages.enter().append('g').merge(this.languages);
     this.languages.attr('data-name', data => data.name)
       .attr('opacity', 1)
-      .on('click', language => selectLanguage(language.name));
+      .on('click', language => select(language.name));
 
     this.languages.append('text')
       .text(language => language.name)
@@ -122,9 +122,9 @@ export class SkillsChart {
       .attr('fill', WHITE)
       .attr('dy', FONT_SIZE + 4 * DOT_SPACING);
   }
-  makePlaceholders(language = null) {
+  makePlaceholders(parentNode) {
     const { options } = this;
-    this.placeholders = this.languages.selectAll('circle.placeholder')
+    this.placeholders = parentNode.selectAll('circle.placeholder')
       .data(language => _.range(Math.floor(DOTS_PER_GROUP * language.percentile), DOTS_PER_GROUP));
     this.placeholders.exit().remove();
     this.placeholders = this.placeholders.enter().append('circle').merge(this.placeholders)
@@ -157,6 +157,8 @@ export class SkillsChart {
   // we're ignoring any updates to the skills for now
   update(skills, language) {
     let options = this.options; // need for inside bound functions below
+
+    this.makePlaceholders(language ? d3.select('g[data-name="' + language + '"]') : d3.select('g[data-name="Languages"]'));
 
     this.technologies
       .on('mouseover', language ? null : SkillsChart.highlightNode)
