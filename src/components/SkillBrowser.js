@@ -18,6 +18,7 @@ class SkillsGraph extends Component {
     const { technology, language } = this.state;
     return (
       <div className='layout'>
+        <TalentDescription technology={technology || language} />
         <LanguageSelector languages={SKILLS.childSkills} selected={language} select={(value) => this.setState({ language: value, technology: null })} />
         <LanguageDisplay language={language} technology={technology} selectTechnology={(value) => this.setState({ technology: value })} />
       </div>

@@ -54,14 +54,14 @@ class D3LanguageDisplay {
       .attr('x2', skill => this.width * skill.impact / skills[0].impact)
       .attr('y1', (skill, index) => this.height * (index + 1) / skills.length)
       .attr('y2', (skill, index) => this.height * (index + 1) / skills.length)
-      .attr('stroke-width', -8 + this.height / skills.length);
+      .attr('stroke-width', Math.max(8, -16 + this.height / skills.length))
 
     rankingLines.transition().delay(MOVE_DELAY(oldSkills, skills)).duration(MOVE_DURATION)
       .attr('x1', 0)
       .attr('x2', skill => this.width * skill.rank * skill.impact / skills[0].impact)
       .attr('y1', (skill, index) => this.height * (index + 1) / skills.length)
       .attr('y2', (skill, index) => this.height * (index + 1) / skills.length)
-      .attr('stroke-width', -8 + this.height / skills.length);
+      .attr('stroke-width', Math.max(8, -16 + this.height / skills.length));
     
     hiddenLines.transition().delay(MOVE_DELAY(oldSkills, skills)).duration(MOVE_DURATION)
       .attr('x1', 0)

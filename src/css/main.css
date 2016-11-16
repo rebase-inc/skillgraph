@@ -12,12 +12,14 @@ body {
   font-family: sans-serif;
 }
 
-.App {
+.layout {
   height: 100vh;
   width: 100vw;
+  padding: 2em;
+  box-sizing: border-box;
   text-align: center;
-  background: radial-gradient(50% 100%, hsla(218, 25%, 13%, 0.7) 49%, hsla(218, 25%, 16%, 0.85) 100%), url('../img/graph-background.png') no-repeat fixed center;
-  background-size: contain;
+  background: radial-gradient(50% 100%, hsla(218, 20%, 13%, 0.8) 49%, hsla(218, 20%, 16%, 0.9) 100%), url('../img/graph-background.png') no-repeat fixed center;
+  background-size: auto 80%;
 }
 
 .dot {
@@ -58,7 +60,7 @@ body {
   line-height: 2em;
 }
 
-.languageSelection > img {
+.languageSelection > svg {
   float: left;
   display: inline-block;
   padding-right: 1em;
@@ -82,10 +84,11 @@ body {
 
 .languageDisplay line:not(.hidden) {
   stroke: hsla(201, 52%, 89%, 1);
+  stroke: #60B7D6;
 }
 
 .languageDisplay line[data-selected=true] {
-  stroke: #EA9600;
+  stroke: #FCA311;
 }
 
 .languageDisplay line.hidden {
@@ -94,10 +97,11 @@ body {
 }
 
 .languageDisplay line.impact {
-  opacity: 0.25;
+  opacity: 0.35;
 }
 
 .talentDescription {
+  text-align: center;
   display: block;
   width: 100%;
   height: 7.5em;
@@ -117,7 +121,7 @@ body {
   font-size: 2.4em;
   line-height: 3em;
   text-transform: uppercase;
-  color: #EA9600;
+  color: #FCA311;
   padding-left: 0.2em;
   padding-right: 0.2em; 
   vertical-align: middle;
