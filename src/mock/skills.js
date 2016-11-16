@@ -84,7 +84,11 @@ const SKILLS = new Skill({
         }),
         new Skill({ name: 'boost', rank: 1.0, impact: 73284 }),
         new Skill({ name: 'clang', rank: 0.92, impact: 13293 }),
-        new Skill({ name: 'http', rank: 0.9090909090909090909, impact: 8592 }),
+        new Skill({ name: 'foo', rank: 0.45, impact: 8592 }),
+        new Skill({ name: 'bar', rank: 0.82, impact: 5592 }),
+        new Skill({ name: 'baz', rank: 0.73, impact: 4829 }),
+        new Skill({ name: 'qux', rank: 0.21, impact: 1931 }),
+        new Skill({ name: 'quuz', rank: 0.48, impact: 2313 }),
       ])
     })
   ]),
