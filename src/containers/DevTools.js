@@ -5,12 +5,12 @@ import LogMonitor from 'redux-devtools-log-monitor';
 import DockMonitor from 'redux-devtools-dock-monitor';
 
 const DevTools = createDevTools(
-    // Monitors are individually adjustable with props.
-    // Consult their repositories to learn about those props.
-    // Here, we put LogMonitor inside a DockMonitor.
-    <DockMonitor toggleVisibilityKey='ctrl-h' changePositionKey='ctrl-q'>
-        <LogMonitor theme='solarized' select={state => state} expandStateRoot={false} />
-    </DockMonitor>
+  // Monitors are individually adjustable with props.
+  // Consult their repositories to learn about those props.
+  // Here, we put LogMonitor inside a DockMonitor.
+  <DockMonitor toggleVisibilityKey='ctrl-h' changePositionKey='ctrl-q'>
+    <LogMonitor theme='codeschool' select={state => state} expandStateRoot={false} />
+  </DockMonitor>
 );
 
 export default DevTools;
