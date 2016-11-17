@@ -7,7 +7,7 @@ const MOVE_DURATION = (oldSkills, newSkills) => 300;
 const MOVE_DELAY = (oldSkills, newSkills) => oldSkills.length > newSkills.length ? 300 : 0;
 
 class D3LanguageDisplay {
-  constructor(parentElement, language, select, selected, options) {
+  constructor(parentElement, technologies, select, selected, options) {
     this.width = options ? options.width || 600 : 600;
     this.height = options ? options.height || 400 : 400;
     this.svg = d3.select(parentElement).append('svg')
@@ -17,10 +17,10 @@ class D3LanguageDisplay {
       .attr('height', this.height)
       .append('g');
     this.select = select;
-    this.update(language, selected);
+    this.update(technologies, selected);
   }
-  update(language, selected) {
-    let skills = language.childSkills.sort((a, b) => b.impact - a.impact).toArray();
+  update(technologies, selected) {
+    let skills = technologies.sort((a, b) => b.impact - a.impact).toArray();
     let oldSkills = this.svg.selectAll('.impact').data();
    
     let impactLines = this.svg.selectAll('.impact').data(skills);
@@ -82,13 +82,13 @@ export default class LanguageDisplay extends Component {
   componentDidMount() {
     this.d3LanguageDisplay = new D3LanguageDisplay(
       this.div, 
-      this.props.language,
+      this.props.technologies,
       this.props.selectTechnology,
       this.props.technology
     );
   }
   shouldComponentUpdate(props, state) {
-    this.d3LanguageDisplay.update(props.language, props.technology);
+    this.d3LanguageDisplay.update(props.technologies, props.technology);
     return false;
   }
   render() {
