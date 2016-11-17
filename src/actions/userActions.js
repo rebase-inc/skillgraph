@@ -1,10 +1,7 @@
-import fetch from 'isomorphic-fetch';
+import { dispatchedRequest } from '../utils/api';
 
-import { GET_USER } from '../constants/actionTypes';
+import { RESTORE_AUTH } from '../constants/actionTypes';
 
-export function getUser() {
-  return {
-    type: GET_USER,
-    payload: { user: { email: 'joe@blow.com' } },
-  } 
+export function restoreAuth() {
+  return dispatchedRequest('GET', '/c2r_auth', RESTORE_AUTH);
 }

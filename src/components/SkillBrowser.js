@@ -15,6 +15,7 @@ class SkillsGraph extends Component {
     };
   }
   render() {
+    console.log('skills are ', this.props.skills);
     const { technology, language } = this.state;
     return (
       <div className='layout'>

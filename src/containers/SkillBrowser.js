@@ -9,6 +9,9 @@ class SkillBrowser extends Component {
   constructor(props, context) {
     super(props, context);
   }
+  componentDidMount() {
+    this.props.actions.restoreAuth();
+  }
   render() {
     const { skills, actions } = this.props;
     return <SkillBrowserComponent skills={skills} actions={actions} />;
