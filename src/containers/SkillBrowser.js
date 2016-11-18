@@ -4,6 +4,8 @@ import { bindActionCreators } from 'redux';
 
 import SkillBrowserComponent from '../components/SkillBrowser';
 import LoginBox from '../components/LoginBox';
+import LoadingBox from '../components/LoadingBox';
+
 import * as UserActions from '../actions/userActions';
 
 class SkillBrowser extends Component {
@@ -15,7 +17,13 @@ class SkillBrowser extends Component {
   }
   render() {
     const { skills, githubAccount, actions } = this.props;
-    return githubAccount === undefined ?  <LoginBox /> : <SkillBrowserComponent skills={skills} actions={actions} />;
+    if (githubAccount === undefined) {
+      return <LoginBox />;
+    } else if (skills.size === 0) {
+      return <SpinningGears />;
+    } else {
+      return <SkillBrowserComponent skills={skills} actions={actions} />;
+    }
   }
 }
 

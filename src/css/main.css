@@ -16,6 +16,26 @@ body {
   background-size: cover;
 }
 
+.loadingBox {
+    position: absolute;
+    display: inline-block;
+    top: 45%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    -webkit-transform: translate(-50%, -50%);
+}
+
+.loadingBox > * {
+  display: block;
+  text-align: center;
+  text-transform: uppercase;
+  margin: 1em;
+}
+
+.loadingBox > div {
+  opacity: 0.5;
+}
+
 .skillBrowser {
   height: 100vh;
   width: 100vw;
@@ -52,6 +72,7 @@ body {
 
 .loginBox > a {
   display: block;
+  position: relative;
   text-decoration: none;
   transition: 200ms background-color;
   margin-top: 1.6em;
@@ -183,4 +204,25 @@ body {
 
 .languageSelection[data-selected=true], .languageSelection:hover {
   opacity: 1.0;
+}
+
+.rotate-gear-one { 
+  stroke: none;
+  fill: hsla(330, 3%, 85%, 1);
+  animation: rotate 9000ms linear infinite; transform-origin: 50% 50%; 
+}
+.rotate-gear-two { 
+  stroke: none;
+  fill: hsla(330, 4%, 70%, 1);
+  animation: rotate 6000ms linear infinite; animation-direction: reverse; transform-origin: 50% 50%; 
+}
+.rotate-gear-three { 
+  stroke: none;
+  fill: hsla(330, 3%, 85%, 1);
+  animation: rotate 4000ms linear infinite; transform-origin: 50% 50%; 
+}
+.rotate { animation: rotate 800ms linear infinite; transform-origin: 50% 50%; }
+@-webkit-keyframes rotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
