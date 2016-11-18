@@ -4,8 +4,6 @@ import LanguageDisplay from './LanguageDisplay';
 import LanguageSelector from './LanguageSelector';
 import TalentDescription from './TalentDescription';
 
-import SKILLS from '../mock/skills';
-
 class SkillsGraph extends Component {
   constructor(props, context) {
     super(props, context);
@@ -25,7 +23,7 @@ class SkillsGraph extends Component {
     const languages = this.props.skills.filter(SkillsGraph.isLanguage);
     const technologies = this.props.skills.filter(SkillsGraph.isTechnology.bind(null, language));
     return (
-      <div className='layout'>
+      <div className='skillBrowser'>
         <TalentDescription technology={technology || language} />
         <LanguageSelector languages={languages} selected={language} select={(value) => this.setState({ language: value, technology: null })} />
         <LanguageDisplay technologies={technologies} technology={technology} selectTechnology={(value) => this.setState({ technology: value })} />

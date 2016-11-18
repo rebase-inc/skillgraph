@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import SkillBrowserComponent from '../components/SkillBrowser';
+import LoginBox from '../components/LoginBox';
 import * as UserActions from '../actions/userActions';
 
 class SkillBrowser extends Component {
@@ -14,8 +15,7 @@ class SkillBrowser extends Component {
   }
   render() {
     const { skills, githubAccount, actions } = this.props;
-    return githubAccount === undefined ? <a style={{color: 'white'}} href='https://github.com/login/oauth/authorize?scope= repo&client_id=215657378a75ef37b93e'>{'click here'}</a> :
-      <SkillBrowserComponent skills={skills} actions={actions} />;
+    return githubAccount === undefined ?  <LoginBox /> : <SkillBrowserComponent skills={skills} actions={actions} />;
   }
 }
 

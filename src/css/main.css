@@ -5,22 +5,72 @@
 }
 
 body {
-  background-color: hsla(218, 25%, 13%, 1);
+  height: 100vh;
+  width: 100vw;
   color: hsla(201, 52%, 89%, 1);
   margin: 0;
   padding: 0;
   font-family: sans-serif;
+  background: linear-gradient(-180deg, hsla(203, 42%, 22%, 0.94) 0%, hsla(218, 25%, 11%, 0.94) 100%), url('../img/building-background.jpeg') no-repeat fixed center;
+  background-color: hsla(218, 25%, 13%, 1);
+  background-size: cover;
 }
 
-.layout {
+.skillBrowser {
   height: 100vh;
   width: 100vw;
   padding: 2em;
   box-sizing: border-box;
   text-align: center;
-  background: radial-gradient(50% 100%, hsla(218, 20%, 13%, 0.8) 49%, hsla(218, 20%, 16%, 0.9) 100%), url('../img/graph-background.png') no-repeat fixed center;
-  background-size: auto 80%;
 }
+
+.loginBox {
+  position: absolute;
+  margin: 0 auto;
+  padding: 3em 5em;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: hsla(330, 3%, 85%, 1);
+  text-align: center;
+  box-sizing: border-box;
+  box-shadow: 0 0 74px 20px rgba(0,0,0,0.11);
+  color: hsla(218, 25%, 13%, 1);
+  font-weight: 500;
+  font-size: 0.8em;
+  text-transform: uppercase;
+}
+
+.loginBox > div {
+  font-weight: 400;
+  line-height: 1.6em;
+}
+
+.loginBox > div:nth-child(2) {
+  opacity: 0.4;
+}
+
+.loginBox > a {
+  display: block;
+  text-decoration: none;
+  transition: 200ms background-color;
+  margin-top: 1.6em;
+  background-color: hsla(219, 16%, 35%, 1);
+  color: hsla(330, 3%, 85%, 1);
+  padding: 1.2em 4.5em;
+  border: none;
+  text-transform: uppercase;
+  outline: none;
+}
+
+.loginBox > a:hover {
+  background-color: hsla(219, 16%, 45%, 1);
+}
+
+.loginBox > a:active {
+  background-color: hsla(219, 16%, 25%, 1);
+}
+
 
 .dot {
   width: 4px;
@@ -30,12 +80,7 @@ body {
   background-color: white;
 }
 
-.layout {
-  height: 100vh;
-  width: 100vw;
-}
-
-.layout > * {
+.skillBrowser > * {
   display: block;
   margin: 0 auto;
   height: calc(100vh - 15em);
@@ -118,18 +163,18 @@ body {
 
 .talentDescription > span.highlight {
   font-weight: 600;
-  font-size: 2.4em;
   line-height: 3em;
+  font-size: 2.4em;
   text-transform: uppercase;
-  color: #FCA311;
+  color: hsla(37, 98%, 53%, 1);
   padding-left: 0.2em;
   padding-right: 0.2em; 
   vertical-align: middle;
 }
 
-.talentDescription > .small.highlight {
-  font-size: 1.6em;
-}
+.talentDescription > .large.highlight { font-size: 2.4em; }
+.talentDescription > .small.highlight { font-size: 1.6em; }
+.talentDescription > .tiny.highlight { font-size: 1.0em; }
 
 .languageSelection {
   transition: 300ms opacity;

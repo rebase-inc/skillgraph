@@ -26,6 +26,7 @@ class D3LanguageDisplay {
     let impactLines = this.svg.selectAll('.impact').data(skills);
     let rankingLines = this.svg.selectAll('.ranking').data(skills);
     let hiddenLines = this.svg.selectAll('.hidden').data(skills);
+    let strokeWidth = Math.max(8, -16 + this.height / skills.length);
 
     // remove lines if we have too many 
     impactLines.exit().transition().duration(REMOVE_DURATION).delay(REMOVE_DELAY).attr('x1', 0).attr('x2', 0).remove();
@@ -51,23 +52,23 @@ class D3LanguageDisplay {
     // transition to new position
     impactLines.transition().delay(MOVE_DELAY(oldSkills, skills)).duration(MOVE_DURATION)
       .attr('x1', 0)
-      .attr('x2', skill => this.width * skill.impact / skills[0].impact)
-      .attr('y1', (skill, index) => this.height * (index + 1) / skills.length)
-      .attr('y2', (skill, index) => this.height * (index + 1) / skills.length)
-      .attr('stroke-width', Math.max(8, -16 + this.height / skills.length))
+      .attr('x2', skill => this.width * Math.max(0.015, skill.impact / skills[0].impact))
+      .attr('y1', (skill, index) => (this.height - strokeWidth) * (index + 1) / skills.length)
+      .attr('y2', (skill, index) => (this.height - strokeWidth) * (index + 1) / skills.length)
+      .attr('stroke-width', strokeWidth)
 
     rankingLines.transition().delay(MOVE_DELAY(oldSkills, skills)).duration(MOVE_DURATION)
       .attr('x1', 0)
-      .attr('x2', skill => this.width * skill.rank * skill.impact / skills[0].impact)
-      .attr('y1', (skill, index) => this.height * (index + 1) / skills.length)
-      .attr('y2', (skill, index) => this.height * (index + 1) / skills.length)
-      .attr('stroke-width', Math.max(8, -16 + this.height / skills.length));
+      .attr('x2', skill => this.width * skill.rank * Math.max(0.015, skill.impact / skills[0].impact))
+      .attr('y1', (skill, index) => (this.height - strokeWidth) * (index + 1) / skills.length)
+      .attr('y2', (skill, index) => (this.height - strokeWidth) * (index + 1) / skills.length)
+      .attr('stroke-width', strokeWidth);
     
     hiddenLines.transition().delay(MOVE_DELAY(oldSkills, skills)).duration(MOVE_DURATION)
       .attr('x1', 0)
       .attr('x2', this.width)
-      .attr('y1', (skill, index) => this.height * (index + 1) / skills.length)
-      .attr('y2', (skill, index) => this.height * (index + 1) / skills.length)
+      .attr('y1', (skill, index) => (this.height - strokeWidth) * (index + 1) / skills.length)
+      .attr('y2', (skill, index) => (this.height - strokeWidth) * (index + 1) / skills.length)
       .attr('stroke-width', this.height / skills.length)
 
     // add mouseover handler 
