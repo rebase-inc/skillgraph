@@ -20,7 +20,7 @@ class SkillBrowser extends Component {
     if (githubAccount === undefined) {
       return <LoginBox />;
     } else if (skills.size === 0) {
-      return <SpinningGears />;
+      return <LoadingBox />;
     } else {
       return <SkillBrowserComponent skills={skills} actions={actions} />;
     }
