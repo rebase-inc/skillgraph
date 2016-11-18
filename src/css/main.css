@@ -148,8 +148,7 @@ body {
 }
 
 .languageDisplay line:not(.hidden) {
-  stroke: hsla(201, 52%, 89%, 1);
-  stroke: #60B7D6;
+  stroke: hsla(330, 3%, 85%, 1);
 }
 
 .languageDisplay line[data-selected=true] {
