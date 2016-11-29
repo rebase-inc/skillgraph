@@ -26,7 +26,7 @@ class D3LanguageDisplay {
     let impactLines = this.svg.selectAll('.impact').data(skills);
     let rankingLines = this.svg.selectAll('.ranking').data(skills);
     let hiddenLines = this.svg.selectAll('.hidden').data(skills);
-    let strokeWidth = Math.max(8, -16 + this.height / skills.length);
+    let strokeWidth = Math.max(8, -30 + this.height / skills.length);
 
     // remove lines if we have too many 
     impactLines.exit().transition().duration(REMOVE_DURATION).delay(REMOVE_DELAY).attr('x1', 0).attr('x2', 0).remove();
