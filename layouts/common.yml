@@ -1,0 +1,10 @@
+version: '2'
+
+services:
+  code2resume:
+    container_name: code2resume
+    build: 
+      context: ../services/code2resume
+    image: code2resume 
+    expose:
+      - "9000"
