@@ -13,6 +13,8 @@ COPY . /libs
 
 WORKDIR /libs
 
+ARG REACT_APP_GITHUB_APP_CLIENT_ID
+
 RUN npm install npm@2 -g && \
     npm install pushstate-server -g && \
     npm install && \

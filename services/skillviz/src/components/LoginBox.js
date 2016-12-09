@@ -3,11 +3,12 @@ import GithubLogo from './GithubLogo';
 
 class LoginBox extends Component {
   render() {
+    console.log(process.env);
     return (
       <div className='loginBox'>
         <div>{ 'Log in or sign up' }</div>
         <div>{ 'with GitHub' }</div>
-        <a href='https://github.com/login/oauth/authorize?scope=repo&client_id=215657378a75ef37b93e'>
+        <a href={'https://github.com/login/oauth/authorize?scope=repo&client_id=' + process.env.REACT_APP_GITHUB_APP_CLIENT_ID} >
           {'Authorize'}
         </a>
       </div>
