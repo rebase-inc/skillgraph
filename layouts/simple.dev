@@ -1,0 +1,9 @@
+version: '2'
+
+services:
+  skillviz:
+    extends:
+      file: common.yml
+      service: skillviz
+    ports:
+      - "9000:9000"

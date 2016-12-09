@@ -1,10 +1,10 @@
 version: '2'
 
 services:
-  code2resume:
-    container_name: code2resume
+  skillviz:
+    container_name: skillviz
     build: 
-      context: ../services/code2resume
-    image: code2resume 
+      context: ../services/skillviz
+    image: skillviz 
     expose:
       - "9000"

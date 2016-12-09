@@ -1,0 +1,9 @@
+version: '2'
+
+services:
+  code2resume:
+    extends:
+      file: common.yml
+      service: code2resume
+    ports:
+      - "9000:9000"

@@ -1,9 +1,55 @@
 version: '2'
 
 services:
-  code2resume:
+  skillviz:
     extends:
       file: common.yml
-      service: code2resume
-    ports:
-      - "9000:9000"
+      service: skillviz
+  proxy:
+    extends:
+      file: "${PROXY_REPO}/layouts/common.yml"
+      service: proxy
+  rest_api:
+    extends:
+      file: "${REST_API_REPO}/layouts/common.yml"
+      service: rest_api
+  rq_dashboard:
+    extends:
+      file: "${JOB_QUEUE_REPO}/layouts/common.yml"
+      service: rq_dashboard
+  redis:
+    extends:
+      file: "${JOB_QUEUE_REPO}/layouts/common.yml"
+      service: redis
+  default_queue:
+    extends:
+      file: "${JOB_QUEUE_REPO}/layouts/common.yml"
+      service: default_queue
+    environment:
+      LOG_LEVEL: "DEBUG"
+  private_github_crawler:
+    extends:
+      file: "${JOB_QUEUE_REPO}/layouts/common.yml"
+      service: private_github_crawler
+    environment:
+      LOG_LEVEL: "DEBUG"
+  public_github_crawler:
+    extends:
+      file: "${JOB_QUEUE_REPO}/layouts/common.yml"
+      service: public_github_crawler
+    environment:
+      LOG_LEVEL: "DEBUG"
+  population_analyzer:
+    extends:
+      file: "${JOB_QUEUE_REPO}/layouts/common.yml"
+      service: population_analyzer
+    environment:
+      LOG_LEVEL: "DEBUG"
+  logging_server:
+    extends:
+      file: "${LOGGING_SERVER_REPO}/layouts/common.yml"
+      service: logging_server
+    environment:
+      LOG_LEVEL: "DEBUG"
+
+
