@@ -3,11 +3,11 @@ version: '2'
 services:
   skillviz:
     container_name: skillviz
-    build: 
+    build:
       context: ../services/skillviz
       args:
         REACT_APP_GITHUB_APP_CLIENT_ID: "${GITHUB_APP_CLIENT_ID}"
-    image: skillviz 
+    image: skillviz
     expose:
       - "9000"
     environment:

@@ -1,17 +1,26 @@
 version: '2'
+volumes:
+  sql: {}
 
 services:
   skillviz:
     extends:
       file: common.yml
       service: skillviz
+  database:
+    image: postgres
+    container_name: database
+    environment:
+      PGDATA: "/var/lib/postgresql/data/rebase"
+    volumes:
+     - sql:/var/lib/postgresql/data/rebase
   proxy:
     extends:
       file: "${PROXY_REPO}/layouts/common.yml"
       service: proxy
   rest_api:
     extends:
-      file: "${REST_API_REPO}/layouts/common.yml"
+      file: "${REST_API_REPO}/layouts/dev.yml"
       service: rest_api
   rq_dashboard:
     extends:
@@ -45,10 +54,10 @@ services:
       service: population_analyzer
     environment:
       LOG_LEVEL: "DEBUG"
-  logging_server:
+  logserver:
     extends:
-      file: "${LOGGING_SERVER_REPO}/layouts/common.yml"
-      service: logging_server
+      file: "${LOGSERVER_REPO}/layouts/common.yml"
+      service: logserver
     environment:
       LOG_LEVEL: "DEBUG"
 

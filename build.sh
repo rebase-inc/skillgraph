@@ -13,7 +13,7 @@ abspath() {
 export PYTHON_IMPACT_REPO=${PYTHON_IMPACT_REPO:-$(abspath $(prompt "Python Impact Repo" "../python-impact"))}
 export JAVASCRIPT_IMPACT_REPO=${JAVASCRIPT_IMPACT_REPO:-$(abspath $(prompt "Javascript Impact Repo" "../javascript-impact"))}
 
-export LOGGING_SERVER_REPO=${LOGGING_SERVER_REPO:-$(abspath $(prompt "Logging Server Repo" "../logging-server"))}
+export LOGSERVER_REPO=${LOGSERVER_REPO:-$(abspath $(prompt "Log Server Repo" "../logserver"))}
 
 export JOB_QUEUE_REPO=${JOB_QUEUE_REPO:-$(abspath $(prompt "Job Queue Repo" "../job-queue"))}
 export REST_API_REPO=${REST_API_REPO:-$(abspath $(prompt "REST API repo" "../rest-api"))}
