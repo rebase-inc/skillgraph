@@ -51,7 +51,6 @@ def set_environment_variables(composefile):
         if os.path.isdir(path):
             linked_env_vars.update(set_environment_variables(os.path.join(path, 'layouts', os.path.basename(composefile))))
 
-
     env_vars.update(linked_env_vars)
 
     return env_vars.difference(ALREADY_SET_ENV)
