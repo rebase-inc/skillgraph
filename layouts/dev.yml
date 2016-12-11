@@ -38,7 +38,7 @@ services:
       LOG_LEVEL: "DEBUG"
   private_github_crawler:
     extends:
-      file: "${JOB_QUEUE_REPO}/layouts/common.yml"
+      file: "${JOB_QUEUE_REPO}/layouts/dev.yml"
       service: private_github_crawler
     environment:
       LOG_LEVEL: "DEBUG"

@@ -80,10 +80,10 @@ def stop(buildtype, extra):
 
 def start(buildtype, extra):
     build(buildtype, extra)
-    up(buildtype, extra, daemon)
+    up(buildtype, extra)
 
-def execute(container, command):
-    subprocess.run(['docker', 'exec', '-t', container] + command)
+def execute(buildtype, extra):
+    subprocess.run(['docker', 'exec', '-it'] + extra)
 
 def setenv(vm_name):
     try:
@@ -124,6 +124,8 @@ def main():
     args, extra = parser.parse_known_args()
     if 'detached' in args and args.detached == True:
         extra = ['-d'] + extra
+    if 'container' in args:
+        extra = [args.container] + extra
 
     if 'func' in args:
         args.func(args.type, extra)
