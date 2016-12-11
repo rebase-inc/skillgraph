@@ -59,7 +59,7 @@ def set_environment_variables(composefile):
 def compose(buildtype, extra, stdout = None):
     composefile = 'layouts/{}.yml'.format(buildtype)
     env_vars = set_environment_variables(composefile)
-    subprocess.run(["docker-compose", "-f", composefile] + extra)
+    subprocess.run(["docker-compose", "-f", composefile] + extra, stdout)
     if env_vars:
         print('')
         print('To not have to deal with environment variables again, run the following (or add to sourceable bash file):')
@@ -80,7 +80,7 @@ def stop(buildtype, extra):
 
 def start(buildtype, extra):
     build(buildtype, extra)
-    up(buildtype, extra)
+    up(buildtype, extra, daemon)
 
 def execute(container, command):
     subprocess.run(['docker', 'exec', '-t', container] + command)
@@ -104,9 +104,11 @@ def main():
     build_parser.set_defaults(func = build)
 
     up_parser = subparsers.add_parser('up')
+    up_parser.add_argument('--detached', '-d', action='store_true', default = True)
     up_parser.set_defaults(func = up)
 
     start_parser = subparsers.add_parser('start')
+    start_parser.add_argument('--detached', '-d', action='store_true', default = True)
     start_parser.set_defaults(func = start)
 
     stop_parser = subparsers.add_parser('stop')
@@ -120,6 +122,9 @@ def main():
     db_parser.set_defaults(func = db)
 
     args, extra = parser.parse_known_args()
+    if 'detached' in args and args.detached == True:
+        extra = ['-d'] + extra
+
     if 'func' in args:
         args.func(args.type, extra)
     else:
