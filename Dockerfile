@@ -1,18 +1,15 @@
-FROM alpine:3.4
+FROM node:alpine
 
-RUN apk add --update build-base python nodejs rsync && \
-    rm -rf /var/cache/apk/* && \
-    cd $(npm root -g)/npm  && \
-    npm install fs-extra && \
-    sed -i -e s/graceful-fs/fs-extra/ -e s/fs.rename/fs.move/ ./lib/utils/rename.js
+RUN mkdir -p /usr/src/app && mkdir -p /usr/src/build
+COPY . /usr/src/app
+WORKDIR /usr/src/app
 
-COPY package.json /deps/package.json
+ARG REACT_APP_GITHUB_APP_CLIENT_ID
 
-WORKDIR /deps
+RUN npm install --quiet --depth -1 && \
+    npm install --quiet --depth -1 pushstate-server -g && \
+    npm run --silent build && \
+    cp -r build/* /usr/src/build/ && \
+    rm -rf /usr/src/app
 
-RUN npm install npm@2 -g && \
-    npm install
-
-WORKDIR /code
-
-CMD ["/code/start", "start"]
+CMD ["pushstate-server", "/usr/src/build", "9000"]
