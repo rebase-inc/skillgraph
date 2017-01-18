@@ -20,13 +20,13 @@ class D3LanguageDisplay {
     this.selectModule = selectModule;
     this.update(language, module);
   }
-  getBarWidth(module, maxImpact) {
-    const impact = module.get('impact');
-    return impact === undefined ? this.width : this.width * Math.max(0.015, 0.9 * impact / maxImpact);
+  getBarWidth(module, maxPopulation) {
+    return this.width * module.population / maxPopulation;
   }
   update(language, module) {
-    let modules = language.modules.sort((a, b) => b.impact - a.impact).toArray();
+    let modules = language.modules.sort((a, b) => b.population - a.population).toArray();
     let skills = [language.grammar, language.stdlib].concat(modules).slice(0, this.max_count)
+    let maxPopulation = Math.max(...skills.map(s => s.population));
     let oldSkills = this.svg.selectAll('.impact').data();
 
     let impactLines = this.svg.selectAll('.impact').data(skills);
@@ -58,14 +58,14 @@ class D3LanguageDisplay {
     // transition to new position
     impactLines.transition().delay(MOVE_DELAY(oldSkills, skills)).duration(MOVE_DURATION)
       .attr('x1', 0)
-      .attr('x2', skill => this.getBarWidth(skill, modules[0].impact))
+      .attr('x2', skill => this.getBarWidth(skill, maxPopulation))
       .attr('y1', (skill, index) => (this.height - strokeWidth) * (index + 1) / skills.length)
       .attr('y2', (skill, index) => (this.height - strokeWidth) * (index + 1) / skills.length)
       .attr('stroke-width', strokeWidth)
 
     rankingLines.transition().delay(MOVE_DELAY(oldSkills, skills)).duration(MOVE_DURATION)
       .attr('x1', 0)
-      .attr('x2', skill => (1 - skill.percentile) * this.getBarWidth(skill, modules[0].impact))
+      .attr('x2', skill => (1 - skill.rank / skill.population) * this.getBarWidth(skill, maxPopulation))
       .attr('y1', (skill, index) => (this.height - strokeWidth) * (index + 1) / skills.length)
       .attr('y2', (skill, index) => (this.height - strokeWidth) * (index + 1) / skills.length)
       .attr('stroke-width', strokeWidth);

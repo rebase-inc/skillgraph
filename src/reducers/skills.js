@@ -4,10 +4,10 @@ import { RESTORE_AUTH } from '../constants/actionTypes';
 import { PENDING, SUCCESS, ERROR } from '../constants/requestConstants';
 import IMPACT_SCORES from '../constants/impactScores';
 
-const Language = Immutable.Record({ name: '', percentile: 0.001, modules: Immutable.Map(), grammar: Immutable.Map(), stdlib: Immutable.Map() })
-const Module = Immutable.Record({ name: '', percentile: 0.001, impact: 0 });
-const Grammar = Immutable.Record({ name: 'grammar', percentile: 0.001 });
-const StdLib = Immutable.Record({ name: 'stdlib', percentile: 0.001 });
+const Language = Immutable.Record({ name: '', rank: 0, population: 1, modules: Immutable.Map(), grammar: Immutable.Map(), stdlib: Immutable.Map() })
+const Module = Immutable.Record({ name: '', rank: 0, population: 1 });
+const Grammar = Immutable.Record({ name: 'grammar', rank: 0, population: 1 });
+const StdLib = Immutable.Record({ name: 'stdlib', rank: 0, population: 1 });
 const initialState = new Immutable.Map();
 
 export default function skills(prevState = initialState, action) {
@@ -16,13 +16,13 @@ export default function skills(prevState = initialState, action) {
       return Immutable.fromJS(action.payload.user.current_role.skill_set.skills).map((lang_stats, lang_name) => {
         return new Language({
           name: lang_name,
-          percentile: parseFloat(lang_stats.get('percentile', 0.001)),
-          grammar: new Grammar(lang_stats.get('grammar', { percentile: lang_stats.get('percentile', 0.001) })),
-          stdlib: new StdLib(lang_stats.get('stdlib', { percentile: lang_stats.get('percentile', 0.001) })),
-          modules: lang_stats.get('modules', Immutable.List()).map((module_stats, module_name) => {
+          rank: parseInt(lang_stats.get('rank', 1)),
+          grammar: new Grammar(lang_stats.get('grammar')),
+          stdlib: new StdLib(lang_stats.get('stdlib')),
+          modules: lang_stats.get('modules', Immutable.Map()).map((module_stats, module_name) => {
             return new Module({
-              percentile: parseFloat(module_stats.get('percentile', 0.001)),
-              impact: parseFloat(module_stats.get('impact', 0)),
+              rank: module_stats.get('rank', 0),
+              population: module_stats.get('population', 1),
               name: module_name
             });
           })
