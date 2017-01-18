@@ -22,7 +22,7 @@ class D3LanguageDisplay {
   }
   getBarWidth(module, maxImpact) {
     const impact = module.get('impact');
-    return impact === undefined ? this.width : this.width * Math.max(0.015, impact / maxImpact);
+    return impact === undefined ? this.width : this.width * Math.max(0.015, 0.9 * impact / maxImpact);
   }
   update(language, module) {
     let modules = language.modules.sort((a, b) => b.impact - a.impact).toArray();
