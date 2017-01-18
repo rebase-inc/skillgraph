@@ -2,7 +2,7 @@ import fetch from 'isomorphic-fetch';
 
 import { ERROR, UNAUTHORIZED, PENDING, SUCCESS } from '../constants/requestConstants';
 
-const BASE_URL = '/api/v1';
+const BASE_URL = process.env.NODE_ENV === 'production' ? '/api/v1' : 'http://localhost:3000/api/v1';
 
 class ServerError extends Error {
   constructor(message) {

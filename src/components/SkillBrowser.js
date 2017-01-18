@@ -4,32 +4,38 @@ import LanguageDisplay from './LanguageDisplay';
 import LanguageSelector from './LanguageSelector';
 import TalentDescription from './TalentDescription';
 
-class SkillsGraph extends Component {
+class SkillsBrowser extends Component {
   constructor(props, context) {
     super(props, context);
-    this.state = { 
-      language: props.skills.find(SkillsGraph.isLanguage), 
-      technology: null,
+    this.state = {
+      language: props.languages.first(),
+      module: null,
     };
+    this.selectLanguage = this.selectLanguage.bind(this);
+    this.selectModule = this.selectModule.bind(this);
   }
-  static isLanguage(skill) {
-    return skill.name !== '_overall' && skill.name.split('.').length === 1;
+  selectLanguage(name) {
+    this.setState({
+      language: this.props.languages.get(name),
+      module: null
+    });
   }
-  static isTechnology(language, skill) {
-    return skill.name.startsWith(language.name) && skill.name !== language.name;
+  selectModule(name) {
+    this.setState({
+      module: !!name ? this.state.language.get(name) || this.state.language.modules.get(name) : null,
+    });
   }
   render() {
-    const { technology, language } = this.state;
-    const languages = this.props.skills.filter(SkillsGraph.isLanguage);
-    const technologies = this.props.skills.filter(SkillsGraph.isTechnology.bind(null, language));
+    const { language, module } = this.state;
+    const { languages } = this.props;
     return (
       <div className='skillBrowser'>
-        <TalentDescription technology={technology || language} />
-        <LanguageSelector languages={languages} selected={language} select={(value) => this.setState({ language: value, technology: null })} />
-        <LanguageDisplay technologies={technologies} technology={technology} selectTechnology={(value) => this.setState({ technology: value })} />
+        <TalentDescription skill={module || language} />
+        <LanguageSelector languages={languages} selected={language} select={this.selectLanguage} />
+        <LanguageDisplay language={language} selectModule={this.selectModule} selected={module} />
       </div>
     );
   }
 }
 
-export default SkillsGraph;
+export default SkillsBrowser;

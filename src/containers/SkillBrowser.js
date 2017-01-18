@@ -16,17 +16,17 @@ class SkillBrowser extends Component {
     this.props.actions.restoreAuth();
   }
   render() {
-    const { skills, githubAccount, actions } = this.props;
+    const { languages, githubAccount, actions } = this.props;
     if (githubAccount === undefined) {
       return <LoginBox />;
-    } else if (skills.size === 0) {
+    } else if (languages.size === 0) {
       return <LoadingBox />;
     } else {
-      return <SkillBrowserComponent skills={skills} actions={actions} />;
+      return <SkillBrowserComponent languages={languages} actions={actions} />;
     }
   }
 }
 
-let mapStateToProps = state => ({ user: state.user, skills: state.skills, githubAccount: state.githubAccounts.first() });
+let mapStateToProps = state => ({ user: state.user, languages: state.skills, githubAccount: state.githubAccounts.first() });
 let mapDispatchToProps = dispatch => ({ actions: bindActionCreators(UserActions, dispatch), });
 export default connect(mapStateToProps, mapDispatchToProps)(SkillBrowser);

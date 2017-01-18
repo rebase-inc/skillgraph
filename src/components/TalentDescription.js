@@ -1,14 +1,13 @@
 import React, { Component } from 'react';
 
 const TalentDescription = (props) => {
-  const name = props.technology.name.replace('.3rd-party.', ' ').replace('.language', ' language');
-  const size = ['large', 'small', 'tiny'][Math.round(name.length / 16) - 1]
+  const size = ['large', 'small', 'tiny'][Math.round(props.skill.name.length / 16) - 1]
   return (
     <div className='talentDescription'>
-      <span>{'You rank above'}</span>
-      <span className='highlight'>{ Math.round(props.technology.rank * 100) + '%'}</span>
+      <span>{'You rank in the top'}</span>
+      <span className='highlight'>{ Math.round(props.skill.percentile * 1000) / 10 + '%'}</span>
       <span>{'of'}</span>
-      <span className={size + ' highlight'}>{ name }</span>
+      <span className={size + ' highlight'}>{ props.skill.name }</span>
       <span>{'developers'}</span>
     </div>
   );
