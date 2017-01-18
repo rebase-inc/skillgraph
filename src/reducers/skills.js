@@ -17,6 +17,7 @@ export default function skills(prevState = initialState, action) {
         return new Language({
           name: lang_name,
           rank: parseInt(lang_stats.get('rank', 1)),
+          population: parseInt(lang_stats.get('population', 1)),
           grammar: new Grammar(lang_stats.get('grammar')),
           stdlib: new StdLib(lang_stats.get('stdlib')),
           modules: lang_stats.get('modules', Immutable.Map()).map((module_stats, module_name) => {
