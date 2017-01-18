@@ -4,9 +4,8 @@ import { RESTORE_AUTH } from '../constants/actionTypes';
 import { PENDING, SUCCESS, ERROR } from '../constants/requestConstants';
 import IMPACT_SCORES from '../constants/impactScores';
 
-const Language = Immutable.Record({ name: '', rank: 0, population: 1, modules: Immutable.Map(), grammar: Immutable.Map(), stdlib: Immutable.Map() })
+const Language = Immutable.Record({ name: '', rank: 0, population: 1, modules: Immutable.Map(), stdlib: Immutable.Map() })
 const Module = Immutable.Record({ name: '', rank: 0, population: 1 });
-const Grammar = Immutable.Record({ name: 'grammar', rank: 0, population: 1 });
 const StdLib = Immutable.Record({ name: 'stdlib', rank: 0, population: 1 });
 const initialState = new Immutable.Map();
 
@@ -18,7 +17,6 @@ export default function skills(prevState = initialState, action) {
           name: lang_name,
           rank: parseInt(lang_stats.get('rank', 1)),
           population: parseInt(lang_stats.get('population', 1)),
-          grammar: new Grammar(lang_stats.get('grammar')),
           stdlib: new StdLib(lang_stats.get('stdlib')),
           modules: lang_stats.get('modules', Immutable.Map()).map((module_stats, module_name) => {
             return new Module({

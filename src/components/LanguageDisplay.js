@@ -25,7 +25,7 @@ class D3LanguageDisplay {
   }
   update(language, module) {
     let modules = language.modules.sort((a, b) => b.population - a.population).toArray();
-    let skills = [language.grammar, language.stdlib].concat(modules).slice(0, this.max_count)
+    let skills = [language.stdlib].concat(modules).slice(0, this.max_count)
     let maxPopulation = Math.max(...skills.map(s => s.population));
     let oldSkills = this.svg.selectAll('.impact').data();
 
