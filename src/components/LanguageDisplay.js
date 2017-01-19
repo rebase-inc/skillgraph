@@ -20,13 +20,13 @@ class D3LanguageDisplay {
     this.selectModule = selectModule;
     this.update(language, module);
   }
-  getBarWidth(module, maxPopulation) {
-    return this.width * module.population / maxPopulation;
+  getBarWidth(module, maxRelevance) {
+    return module.name == 'stdlib' ? this.width : 0.9 * this.width * module.relevance / maxRelevance;
   }
   update(language, module) {
-    let modules = language.modules.sort((a, b) => b.population - a.population).toArray();
+    let modules = language.modules.sort((a, b) => b.relevance - a.relevance).toArray();
     let skills = [language.stdlib].concat(modules).slice(0, this.max_count)
-    let maxPopulation = Math.max(...skills.map(s => s.population));
+    let maxRelevance = Math.max(...modules.map(s => s.relevance));
     let oldSkills = this.svg.selectAll('.impact').data();
 
     let impactLines = this.svg.selectAll('.impact').data(skills);
@@ -58,14 +58,14 @@ class D3LanguageDisplay {
     // transition to new position
     impactLines.transition().delay(MOVE_DELAY(oldSkills, skills)).duration(MOVE_DURATION)
       .attr('x1', 0)
-      .attr('x2', skill => this.getBarWidth(skill, maxPopulation))
+      .attr('x2', skill => this.getBarWidth(skill, maxRelevance))
       .attr('y1', (skill, index) => (this.height - strokeWidth) * (index + 1) / skills.length)
       .attr('y2', (skill, index) => (this.height - strokeWidth) * (index + 1) / skills.length)
       .attr('stroke-width', strokeWidth)
 
     rankingLines.transition().delay(MOVE_DELAY(oldSkills, skills)).duration(MOVE_DURATION)
       .attr('x1', 0)
-      .attr('x2', skill => (1 - skill.rank / skill.population) * this.getBarWidth(skill, maxPopulation))
+      .attr('x2', skill => (1 - skill.rank / skill.population) * this.getBarWidth(skill, maxRelevance))
       .attr('y1', (skill, index) => (this.height - strokeWidth) * (index + 1) / skills.length)
       .attr('y2', (skill, index) => (this.height - strokeWidth) * (index + 1) / skills.length)
       .attr('stroke-width', strokeWidth);
