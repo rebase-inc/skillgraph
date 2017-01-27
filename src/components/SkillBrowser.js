@@ -21,6 +21,7 @@ class SkillsBrowser extends Component {
     });
   }
   selectModule(name) {
+    console.log('trying to select', name);
     this.setState({
       module: !!name ? this.state.language.get(name) || this.state.language.modules.get(name) : null,
     });

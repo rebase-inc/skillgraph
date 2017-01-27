@@ -21,18 +21,17 @@ class D3LanguageDisplay {
     this.update(language, module);
   }
   getBarWidth(module, maxRelevance) {
-    return module.name == 'stdlib' ? this.width : 0.9 * this.width * module.relevance / maxRelevance;
+    return module.name == '__stdlib__' ? this.width : 0.9 * this.width * module.relevance / maxRelevance;
   }
   update(language, module) {
     let modules = language.modules.sort((a, b) => b.relevance - a.relevance).toArray();
-    let skills = [language.stdlib].concat(modules).slice(0, this.max_count)
-    let maxRelevance = Math.max(...modules.map(s => s.relevance));
+    let maxRelevance = Math.max(...modules.filter(s => s.name != '__stdlib__').map(s => s.relevance));
     let oldSkills = this.svg.selectAll('.impact').data();
 
-    let impactLines = this.svg.selectAll('.impact').data(skills);
-    let rankingLines = this.svg.selectAll('.ranking').data(skills);
-    let hiddenLines = this.svg.selectAll('.hidden').data(skills);
-    let strokeWidth = Math.max(8, -30 + this.height / skills.length);
+    let impactLines = this.svg.selectAll('.impact').data(modules);
+    let rankingLines = this.svg.selectAll('.ranking').data(modules);
+    let hiddenLines = this.svg.selectAll('.hidden').data(modules);
+    let strokeWidth = Math.max(8, -30 + this.height / modules.length);
 
     // remove lines if we have too many
     impactLines.exit().transition().duration(REMOVE_DURATION).delay(REMOVE_DELAY).attr('x1', 0).attr('x2', 0).remove();
@@ -56,26 +55,26 @@ class D3LanguageDisplay {
     hiddenLines.attr('class', 'hidden').attr('data-skill', skill => skill.name);
 
     // transition to new position
-    impactLines.transition().delay(MOVE_DELAY(oldSkills, skills)).duration(MOVE_DURATION)
+    impactLines.transition().delay(MOVE_DELAY(oldSkills, modules)).duration(MOVE_DURATION)
       .attr('x1', 0)
       .attr('x2', skill => this.getBarWidth(skill, maxRelevance))
-      .attr('y1', (skill, index) => (this.height - strokeWidth) * (index + 1) / skills.length)
-      .attr('y2', (skill, index) => (this.height - strokeWidth) * (index + 1) / skills.length)
+      .attr('y1', (skill, index) => (this.height - strokeWidth) * (index + 1) / modules.length)
+      .attr('y2', (skill, index) => (this.height - strokeWidth) * (index + 1) / modules.length)
       .attr('stroke-width', strokeWidth)
 
-    rankingLines.transition().delay(MOVE_DELAY(oldSkills, skills)).duration(MOVE_DURATION)
+    rankingLines.transition().delay(MOVE_DELAY(oldSkills, modules)).duration(MOVE_DURATION)
       .attr('x1', 0)
       .attr('x2', skill => (1 - skill.rank / skill.population) * this.getBarWidth(skill, maxRelevance))
-      .attr('y1', (skill, index) => (this.height - strokeWidth) * (index + 1) / skills.length)
-      .attr('y2', (skill, index) => (this.height - strokeWidth) * (index + 1) / skills.length)
+      .attr('y1', (skill, index) => (this.height - strokeWidth) * (index + 1) / modules.length)
+      .attr('y2', (skill, index) => (this.height - strokeWidth) * (index + 1) / modules.length)
       .attr('stroke-width', strokeWidth);
 
-    hiddenLines.transition().delay(MOVE_DELAY(oldSkills, skills)).duration(MOVE_DURATION)
+    hiddenLines.transition().delay(MOVE_DELAY(oldSkills, modules)).duration(MOVE_DURATION)
       .attr('x1', 0)
       .attr('x2', this.width)
-      .attr('y1', (skill, index) => (this.height - strokeWidth) * (index + 1) / skills.length)
-      .attr('y2', (skill, index) => (this.height - strokeWidth) * (index + 1) / skills.length)
-      .attr('stroke-width', this.height / skills.length)
+      .attr('y1', (skill, index) => (this.height - strokeWidth) * (index + 1) / modules.length)
+      .attr('y2', (skill, index) => (this.height - strokeWidth) * (index + 1) / modules.length)
+      .attr('stroke-width', this.height / modules.length)
 
     // add mouseover handler
     hiddenLines.on('mouseover', (skill) => this.selectModule(skill.name));
