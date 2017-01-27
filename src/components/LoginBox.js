@@ -8,7 +8,7 @@ class LoginBox extends Component {
       <div className='loginBox'>
         <div>{ 'Log in or sign up' }</div>
         <div>{ 'with GitHub' }</div>
-        <a href={'https://github.com/login/oauth/authorize?scope=repo&client_id=' + process.env.REACT_APP_GITHUB_APP_CLIENT_ID} >
+        <a href={'https://github.com/login/oauth/authorize?scope=user%20repo&client_id=' + process.env.REACT_APP_GITHUB_APP_CLIENT_ID} >
           {'Authorize'}
         </a>
       </div>
