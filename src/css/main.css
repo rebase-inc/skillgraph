@@ -11,7 +11,7 @@ body {
   margin: 0;
   padding: 0;
   font-family: sans-serif;
-  background: linear-gradient(-180deg, hsla(203, 92%, 10%, 0.88) 0%, hsla(222, 100%, 2%, 0.88) 100%), url('../img/building-background.jpeg') no-repeat fixed center;
+  background: linear-gradient(-180deg, hsla(203, 92%, 10%, 0.91) 0%, hsla(222, 100%, 2%, 0.95) 100%), url('../img/building-background.jpeg') no-repeat fixed center;
   background-color: hsla(218, 25%, 13%, 1);
   background-size: cover;
 }
