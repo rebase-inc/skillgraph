@@ -4,10 +4,12 @@ import { ERROR, UNAUTHORIZED, PENDING, SUCCESS } from '../constants/requestConst
 
 const BASE_URL = process.env.NODE_ENV === 'production' ? '/api/v1' : 'http://localhost:3000/api/v1';
 
+export const LOGIN_URL = BASE_URL + '/github/login';
+
 class ServerError extends Error {
   constructor(message) {
     super(message);
-    this.name = this.constructor.name;
+    this.name = 'ServerError';
     this.message = message;
   }
 }
@@ -15,7 +17,7 @@ class ServerError extends Error {
 class UnauthorizedError extends Error {
   constructor(message) {
     super(message);
-    this.name = this.constructor.name;
+    this.name = 'UnauthorizedError';
     this.message = message;
   }
 }
@@ -25,7 +27,7 @@ function handleStatus(response, redirect) {
   if (response.status >= 200 && response.status < 300) {
     return Promise.resolve(response)
   } else if (response.status == 401) {
-    return Promise.reject(new UnauthorizedError());
+    return Promise.reject(new UnauthorizedError(response.statusText));
   } else {
     return Promise.reject(new ServerError(response.statusText));
   }
@@ -42,22 +44,24 @@ export function dispatchedRequest(method, url, actionType, data, json = true, co
       credentials: 'include', // CORS Hack
       headers: json ? { 'Content-Type': 'application/json; charset=utf-8'} : false,
       body: json ? JSON.stringify(data) : data })
+      // .then(thing => { console.log(thing); return thing })
       .then(handleStatus)
       .then(payload => payload.json())
-    //.then(json => { console.log(json); return json })
       .then(json => dispatch({ type: actionType, status: SUCCESS, payload: json, context: context }))
       .catch(error => {
         const warn = (console.warn || console.log).bind(console);
         let status = ERROR;
         switch (error.name) {
-          case 'UnauthorizedError': status = UNAUTHORIZED; break;
+          case 'UnauthorizedError':
+            warn('Unauthorized: ' + error.message);
+            status = UNAUTHORIZED;
+            break;
           case 'ServerError':
             status = ERROR;
             warn('Server Error: ' + error.message);
             break;
           default:
             warn('Error after request: ' + error.message);
-            warn(error.stack);
             status = ERROR;
             break;
         }

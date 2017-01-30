@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import SkillBrowser from './SkillBrowser';
+import MainView from './MainView';
 import { Provider } from 'react-redux';
 import configureStore from '../store/configureStore';
 
@@ -17,7 +17,7 @@ export default class App extends Component {
     return (
       <Provider store={store}>
         <div>
-          <SkillBrowser />
+          <MainView />
           <DevTools />
         </div>
       </Provider>

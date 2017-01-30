@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import App from '../components/App';
+import MainViewComponent from '../components/MainView';
 import LoginBox from '../components/LoginBox';
 import LoadingBox from '../components/LoadingBox';
 
@@ -18,15 +18,15 @@ class MainView extends Component {
   render() {
     const { languages, githubAccount, actions } = this.props;
     if (githubAccount === undefined) {
-      return <LoginBox />;
+      return <LoginBox login={actions.login} />;
     } else if (languages.size === 0) {
       return <LoadingBox />;
     } else {
-      return <MainView languages={languages} actions={actions} />;
+      return <MainViewComponent account={githubAccount} languages={languages} actions={actions} />;
     }
   }
 }
 
-let mapStateToProps = state => ({ user: state.user, languages: state.skills, githubAccount: state.githubAccounts.first() });
+let mapStateToProps = state => ({ languages: state.skills, githubAccount: state.githubAccounts.first() });
 let mapDispatchToProps = dispatch => ({ actions: bindActionCreators(UserActions, dispatch), });
 export default connect(mapStateToProps, mapDispatchToProps)(MainView);

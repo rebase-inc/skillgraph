@@ -4,8 +4,6 @@ RUN mkdir -p /usr/src/app && mkdir -p /usr/src/build
 COPY . /usr/src/app
 WORKDIR /usr/src/app
 
-ARG REACT_APP_GITHUB_APP_CLIENT_ID
-
 RUN npm install --quiet --depth -1 && \
     npm install --quiet --depth -1 pushstate-server -g && \
     npm run --silent build && \

@@ -11,9 +11,47 @@ body {
   margin: 0;
   padding: 0;
   font-family: sans-serif;
-  background: linear-gradient(-180deg, hsla(203, 92%, 10%, 0.91) 0%, hsla(222, 100%, 2%, 0.95) 100%), url('../img/building-background.jpeg') no-repeat fixed center;
-  background-color: hsla(218, 25%, 13%, 1);
-  background-size: cover;
+  /* background: linear-gradient(-180deg, hsla(203, 92%, 10%, 0.91) 0%, hsla(222, 100%, 2%, 0.95) 100%), url('../img/building-background.jpeg') no-repeat fixed center; */
+  /* background: linear-gradient(-180deg, hsla(203, 40%, 15%, 1) 0%, hsla(203, 50%, 8%, 1) 100%); */
+  background: url('../img/globe.svg') no-repeat fixed center;
+  background-size: auto 80%;
+  background-color: hsla(220, 18%, 10%, 1);
+}
+
+.accountDisplay {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: default;
+}
+
+.accountDisplay > * {
+  display: block;
+  text-align: center;
+  height: 1.5em;
+}
+
+.accountDisplay > .username > * {
+  padding-left: 0.4em;
+  height: 1.5em;
+  width: 1.5em;
+  line-height: 1.5em;
+  font-size: 0.9em;
+  vertical-align: middle;
+}
+
+.accountDisplay > .logout {
+  font-size: 0.7em;
+  color: hsla(0, 70%, 60%, 1);
+  transform: translateX(0.75em);
+}
+
+.accountDisplay > .logout:hover {
+  color: hsla(0, 70%, 70%, 1);
+}
+
+.accountDisplay > .logout:active {
+  color: hsla(0, 70%, 50%, 1);
 }
 
 .loadingBox {
@@ -50,7 +88,7 @@ body {
   top: 40%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: hsla(330, 3%, 85%, 1);
+  background-color: hsla(330, 4%, 91%, 1);
   text-align: center;
   box-sizing: border-box;
   box-shadow: 0 0 74px 20px rgba(0,0,0,0.11);
@@ -76,6 +114,7 @@ body {
   transition: 200ms background-color;
   margin-top: 1.6em;
   background-color: hsla(219, 16%, 35%, 1);
+  background-color: hsla(218, 17%, 28%, 1);
   color: hsla(330, 3%, 85%, 1);
   padding: 1.2em 4.5em;
   border: none;
@@ -84,11 +123,11 @@ body {
 }
 
 .loginBox > a:hover {
-  background-color: hsla(219, 16%, 45%, 1);
+  background-color: hsla(218, 17%, 38%, 1);
 }
 
 .loginBox > a:active {
-  background-color: hsla(219, 16%, 25%, 1);
+  background-color: hsla(218, 17%, 18%, 1);
 }
 
 
