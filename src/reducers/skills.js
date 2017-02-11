@@ -9,7 +9,7 @@ const Module = Immutable.Record({ name: '', rank: 0, population: 1, relevance: 1
 const StdLib = Immutable.Record({ name: '__stdlib__', rank: 0, population: 1, relevance: 1 });
 const initialState = new Immutable.Map();
 
-export default function skills(prevState = initialState, action) {
+export default function skillz(prevState = initialState, action) {
   switch (action.type + action.status) {
     case ( RESTORE_AUTH + SUCCESS ):
       return Immutable.fromJS(action.payload.user.current_role.skill_set.skills).map((lang_stats, lang_name) => {

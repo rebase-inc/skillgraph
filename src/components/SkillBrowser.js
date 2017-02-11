@@ -22,17 +22,18 @@ class SkillsBrowser extends Component {
   }
   selectModule(name) {
     this.setState({
-      module: !!name ? this.state.language.get(name) || this.state.language.modules.get(name) : null,
+      module: this.props.modules.get(`${this.state.language.name}_${name}`)
     });
   }
   render() {
     const { language, module } = this.state;
     const { languages } = this.props;
+    const modules = language.modules.map(name => this.props.modules.get(name));  
     return (
       <div className='skillBrowser'>
         <TalentDescription skill={module || language} />
         <LanguageSelector languages={languages} selected={language} select={this.selectLanguage} />
-        <LanguageDisplay language={language} selectModule={this.selectModule} selected={module} />
+        <LanguageDisplay modules={modules} selectModule={this.selectModule} selected={module} />
       </div>
     );
   }

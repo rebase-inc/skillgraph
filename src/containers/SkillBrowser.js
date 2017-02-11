@@ -9,21 +9,8 @@ import LoadingBox from '../components/LoadingBox';
 import * as UserActions from '../actions/userActions';
 
 class MainView extends Component {
-  constructor(props, context) {
-    super(props, context);
-  }
-  componentDidMount() {
-    this.props.actions.restoreAuth();
-  }
   render() {
-    const { languages, githubAccount, actions } = this.props;
-    if (githubAccount === undefined) {
-      return <LoginBox />;
-    } else if (languages.size === 0) {
-      return <LoadingBox />;
-    } else {
-      return <MainView languages={languages} actions={actions} />;
-    }
+    return <div>{'12341234'}</div>
   }
 }
 

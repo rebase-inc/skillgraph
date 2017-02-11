@@ -2,14 +2,16 @@ import React, { Component } from 'react';
 
 import SkillBrowser from './SkillBrowser';
 import AccountDisplay from './AccountDisplay';
+import ScanButton from './ScanButton';
 
 export default class MainView extends Component {
   render() {
-    const { languages, actions, account } = this.props;
+    const { languages, modules, user, scan, logout } = this.props;
     return (
       <div className='App'>
-        <AccountDisplay account={account} actions={actions} />
-        <SkillBrowser languages={languages} actions={actions} />
+        <AccountDisplay user={user} logout={logout} />
+        <SkillBrowser languages={languages} modules={modules} />
+        <ScanButton scan={scan} text={'reanalyze'} />
       </div>
     );
   }

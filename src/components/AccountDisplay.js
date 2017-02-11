@@ -4,11 +4,12 @@ import GithubLogo from './GithubLogo';
 
 export default class AccountDisplay extends Component {
   render() {
-    const { actions, account } = this.props;
+    const { logout, user } = this.props;
+    console.log('user is ', user.toJS());
     return (
       <div className='accountDisplay'>
-        <Username username={account.login} />
-        <Logout logout={actions.logout} />
+        <Username username={user.login} />
+        <Logout logout={logout} />
       </div>
     );
   }

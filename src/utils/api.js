@@ -1,10 +1,16 @@
 import fetch from 'isomorphic-fetch';
-
-import { ERROR, UNAUTHORIZED, PENDING, SUCCESS } from '../constants/requestConstants';
+import { camelizeKeys } from 'humps';
+import { Schema, arrayOf, normalize } from 'normalizr'
+import * as schema from './schema';
 
 const BASE_URL = process.env.NODE_ENV === 'production' ? '/api/v1' : 'http://localhost:3000/api/v1';
 
 export const LOGIN_URL = BASE_URL + '/github/login';
+
+const FETCH_SETTINGS = {
+  credentials: process.env.NODE_ENV === 'production' ? 'omit' : 'include', // CORS Hack
+  headers: { 'Content-Type': 'application/json; charset=utf-8' },
+}
 
 class ServerError extends Error {
   constructor(message) {
@@ -22,50 +28,30 @@ class UnauthorizedError extends Error {
   }
 }
 
-
-function handleStatus(response, redirect) {
-  if (response.status >= 200 && response.status < 300) {
-    return Promise.resolve(response)
-  } else if (response.status == 401) {
-    return Promise.reject(new UnauthorizedError(response.statusText));
-  } else {
-    return Promise.reject(new ServerError(response.statusText));
-  }
+export function dispatchedRequest(endpoint, schema, method = 'GET', data = undefined) {
+  const settings = Object.assign({}, FETCH_SETTINGS, { method: method, body: method == 'GET' ? undefined : JSON.stringify(data) });
+  return fetch(BASE_URL + endpoint, settings)
+    .then(response => response.json().then(json => ({ json, response })))
+    .then(({ json, response }) => {
+      if (response.status >= 200 && response.status < 300) {
+        return json;
+      } else if (response.status == 401) {
+        return Promise.reject(new UnauthorizedError(response));
+      } else {
+        return Promise.reject(new ServerError(response));
+      }
+    })
+    .then((json) => {
+      console.log('our json is ', json);
+      json = camelizeKeys(json);
+      var a = Object.assign({}, normalize(json, schema));
+      console.log('normalized is ', a);
+      return a;
+    })
+    .then(response => ({response}), error => ({ error: error.message || 'Unknown Error Occurred' }));
 }
 
-export function dispatchedRequest(method, url, actionType, data, json = true, context) {
-  // we dispatch the pending action with some data so that the reducers
-  // can know what data we're attempting to operate on, even if that
-  // operation isn't yet successful.
-  return dispatch => {
-    dispatch({ type: actionType, status: PENDING, payload: data || {}, context: context });
-    return fetch(BASE_URL + url, {
-      method: method,
-      credentials: 'include', // CORS Hack
-      headers: json ? { 'Content-Type': 'application/json; charset=utf-8'} : false,
-      body: json ? JSON.stringify(data) : data })
-      // .then(thing => { console.log(thing); return thing })
-      .then(handleStatus)
-      .then(payload => payload.json())
-      .then(json => dispatch({ type: actionType, status: SUCCESS, payload: json, context: context }))
-      .catch(error => {
-        const warn = (console.warn || console.log).bind(console);
-        let status = ERROR;
-        switch (error.name) {
-          case 'UnauthorizedError':
-            warn('Unauthorized: ' + error.message);
-            status = UNAUTHORIZED;
-            break;
-          case 'ServerError':
-            status = ERROR;
-            warn('Server Error: ' + error.message);
-            break;
-          default:
-            warn('Error after request: ' + error.message);
-            status = ERROR;
-            break;
-        }
-        return dispatch({ type: actionType, status: status, payload: Object.assign(data || {}, {message: error.message || {}}), context: context })
-      });
-  };
-}
+export const fetchAuth = () => dispatchedRequest('/auth', schema.auth);
+export const logout = () => dispatchedRequest('/github/logout', schema.auth);
+export const startScan = () => dispatchedRequest('/github/scan', schema.scan, 'POST', {});
+export const listJobs = () => dispatchedRequest('/github/jobs', { jobs: schema.jobs }, 'GET', {});
