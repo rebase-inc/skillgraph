@@ -42,16 +42,13 @@ export function dispatchedRequest(endpoint, schema, method = 'GET', data = undef
       }
     })
     .then((json) => {
-      console.log('our json is ', json);
       json = camelizeKeys(json);
-      var a = Object.assign({}, normalize(json, schema));
-      console.log('normalized is ', a);
-      return a;
+      return Object.assign({}, normalize(json, schema));
     })
     .then(response => ({response}), error => ({ error: error.message || 'Unknown Error Occurred' }));
 }
 
 export const fetchAuth = () => dispatchedRequest('/auth', schema.auth);
 export const logout = () => dispatchedRequest('/github/logout', schema.auth);
-export const startScan = () => dispatchedRequest('/github/scan', schema.scan, 'POST', {});
+export const startScan = () => dispatchedRequest('/github/scan', { jobs: schema.jobs }, 'POST', {});
 export const listJobs = () => dispatchedRequest('/github/jobs', { jobs: schema.jobs }, 'GET', {});
