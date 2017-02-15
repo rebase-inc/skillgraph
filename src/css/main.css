@@ -207,6 +207,10 @@ body {
   text-align: center;
 }
 
+.languageDisplay .headerValue {
+  fill: hsla(44, 98%, 60%, 1);
+}
+
 .languageDisplay svg {
   position: relative;
   height: 100%;

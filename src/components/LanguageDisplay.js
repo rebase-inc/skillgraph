@@ -13,16 +13,42 @@ class D3LanguageDisplay {
     this.width = options ? options.width || 700 : 700;
     this.height = options ? options.height || 400 : 400;
     this.max_bars = options ? options.max_bars || 21 : 21;
-    this.labelSize = options ? options.labelSize || 18 : 18;
+    this.labelSize = options ? options.labelSize || 16 : 16;
+    this.headerSize = options ? options.headerSize || 48 : 48;
     this.margins = Object.assign({top: 0, bottom: 40, left: 40, right: 20}, options ? options.margins || {} : {});
     this.svg = d3.select(parentElement).append('svg')
       .attr('overflow', 'visible')
-      .attr('viewBox', '0 0 ' + (this.width + this.margins.left + this.margins.right) + ' ' + (this.height + this.margins.top + this.margins.bottom))
+      .attr('viewBox', '0 0 ' + (this.width + this.margins.left + this.margins.right) + ' ' + (this.height + this.headerSize + this.margins.top + this.margins.bottom))
       .attr('preserveAspectRatio', 'xMidYMid')
       .attr('width', this.width + this.margins.left + this.margins.right)
-      .attr('height', this.height + this.margins.top + this.margins.bottom)
-      .append('g')
-      .attr('transform', 'translate(' + this.margins.left + ',' + this.margins.top + ')');
+      .attr('height', this.height + this.margins.top + this.margins.bottom + this.headerSize);
+    this.header = this.svg.append('g').attr('class', 'header').attr('transform', 'translate(' + this.margins.left + ',0)');
+    this.svg = this.svg.append('g')
+      .attr('transform', 'translate(' + this.margins.left + ',' + (this.headerSize + this.margins.top) + ')');
+    let rank = this.header.append('g').attr('class', 'headerRank');
+    let population = this.header.append('g').attr('class', 'headerPopulation')
+    rank.append('text').text('rank')
+      .attr('font-size', 0.30 * this.headerSize)
+      .attr('x', this.width - 2 * this.headerSize)
+      .attr('y', 0)
+      .attr('text-anchor', 'end');
+    population.append('text').text('population')
+      .attr('font-size', 0.30 * this.headerSize)
+      .attr('x', this.width)
+      .attr('y', 0)
+      .attr('text-anchor', 'end');
+    this.rank = rank.append('text')
+      .attr('class', 'headerValue')
+      .attr('font-size', 0.70 * this.headerSize)
+      .attr('x', this.width - 2 * this.headerSize)
+      .attr('y', 0.7 * this.headerSize)
+      .attr('text-anchor', 'end');
+    this.population = population.append('text')
+      .attr('class', 'headerValue')
+      .attr('font-size', 0.70 * this.headerSize)
+      .attr('x', this.width)
+      .attr('y', 0.7 * this.headerSize)
+      .attr('text-anchor', 'end');
     this.onHover = onHover;
     this.update(modules, selected);
   }
@@ -43,6 +69,9 @@ class D3LanguageDisplay {
 
     modules.exit().transition().duration(REMOVE_DURATION).delay(REMOVE_DELAY).remove();
 
+    this.rank.text(selected ? selected.rank : '');
+    this.population.text(selected ? selected.population : '');
+
     let newModules = modules.enter().append('g').attr('class', 'module');
     let populations = newModules.append('line').attr('class', 'population')
       .attr('x1', this.width).attr('x2', this.width).attr('y1', this.height).attr('y2', this.height)
@@ -54,14 +83,15 @@ class D3LanguageDisplay {
       .attr('x1', this.width).attr('x2', this.width).attr('y1', this.height).attr('y2', this.height)
       .merge(modules.select('.selector'));
     let text = newModules.append('text')
-      .attr('x', this.width).attr('y', this.height).attr('text-anchor', 'end')
+      .attr('x', this.width).attr('y', this.height)
+      .attr('text-anchor', 'end')
       .attr('font-size', this.labelSize)
       .merge(modules.select('text'))
       .text((module) => module.name);
-    let tweeters = newModules.append('g').attr('class', 'tweeter')
+    let tweeters = newModules.append('g').attr('class', 'tweeter');
     tweeters.append('path').attr('d', TWEETER_PATH);
     tweeters.append('rect').attr('x', 0).attr('y', 10).attr('width', this.width / data.length).attr('height', 30).attr('fill', 'transparent');
-    tweeters = tweeters.merge(modules.select('.tweeter')); 
+    tweeters = tweeters.merge(modules.select('.tweeter'));
     modules = modules.merge(newModules).attr('data-module', (module) => module.name);
     modules.attr('data-selected', module => selected && module.name == selected.name);
 

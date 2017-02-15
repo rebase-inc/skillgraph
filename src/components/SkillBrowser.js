@@ -33,7 +33,6 @@ class SkillsBrowser extends Component {
     return (
       <div className='skillBrowser'>
         <LanguageSelector languages={languages} selected={language} select={this.selectLanguage} />
-        <ModuleDescription module={module || language} />
         <LanguageDisplay modules={modules} onHover={this.selectModule} selected={module} />
       </div>
     );
