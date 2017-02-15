@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 import LanguageDisplay from './LanguageDisplay';
 import LanguageSelector from './LanguageSelector';
+import ModuleDescription from './ModuleDescription';
 import TalentDescription from './TalentDescription';
 
 class SkillsBrowser extends Component {
@@ -31,9 +32,9 @@ class SkillsBrowser extends Component {
     const modules = language.modules.map(name => this.props.modules.get(name));  
     return (
       <div className='skillBrowser'>
-        <TalentDescription skill={module || language} />
         <LanguageSelector languages={languages} selected={language} select={this.selectLanguage} />
-        <LanguageDisplay modules={modules} selectModule={this.selectModule} selected={module} />
+        <ModuleDescription module={module || language} />
+        <LanguageDisplay modules={modules} onHover={this.selectModule} selected={module} />
       </div>
     );
   }

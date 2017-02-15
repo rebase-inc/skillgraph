@@ -53,17 +53,17 @@ export class Module extends Immutable.Record({ name: '', languageName: '', rank:
 
 const AppStateStructure = {
   auth: undefined,
-  languages: Immutable.Map(),
+  languages: Immutable.OrderedMap(),
   githubUsers: Immutable.Map(),
-  modules: Immutable.Map(),
+  modules: Immutable.OrderedMap(),
   jobs: Immutable.Map(),
 }
 export class AppState extends Immutable.Record(AppStateStructure) {
   constructor(data = {}) {
     data = _.assign({}, data, {
       auth: (data.auths && data.auths[0]) ? new Auth(data.auths[0]) : undefined, // a bit of a hack..should be a single object
-      languages: new Immutable.Map(data.languages || {}).map((lang) => new Language(lang)),
-      modules: new Immutable.Map(data.modules || {}).map((mod) => new Module(mod)),
+      languages: new Immutable.OrderedMap(data.languages || {}).map((lang) => new Language(lang)).sort((a, b) => a.relevance - b.relevance),
+      modules: new Immutable.OrderedMap(data.modules || {}).map((mod) => new Module(mod)).sort((a, b) => a.relevance - b.relevance),
       githubUsers: new Immutable.Map(data.githubUsers || {}).map((ghuser) => new GithubUser(ghuser)),
       jobs: new Immutable.Map(data.jobs || {}).map((job) => new Job(job)),
     });
