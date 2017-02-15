@@ -10,8 +10,8 @@ const TWEETER_PATH = "M13.0577,25.63515 C21.0766,25.63515 25.4626,18.99155 25.46
 
 class D3LanguageDisplay {
   constructor(parentElement, modules, selected, onHover, options) {
-    this.width = options ? options.width || 800 : 800;
-    this.height = options ? options.height || 500 : 500;
+    this.width = options ? options.width || 700 : 700;
+    this.height = options ? options.height || 400 : 400;
     this.max_bars = options ? options.max_bars || 21 : 21;
     this.labelSize = options ? options.labelSize || 18 : 18;
     this.margins = Object.assign({top: 0, bottom: 40, left: 40, right: 20}, options ? options.margins || {} : {});
