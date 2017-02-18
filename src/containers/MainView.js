@@ -20,11 +20,11 @@ class MainView extends Component {
   render() {
     const { jobs, logout, languages, modules, auth, githubUser, startScan } = this.props;
     if (!auth) {
-      return <LoginBox />;
-    } else if (!!jobs.size) {
-      return <LoadingBox jobs={jobs} />;
+      return <LoginBox />
+    } else if (!jobs.size && !!modules.size) {
+      return <MainViewComponent user={githubUser} languages={languages} modules={modules} scan={startScan} logout={logout} />
     } else {
-      return <MainViewComponent user={githubUser} languages={languages} modules={modules} scan={startScan} logout={logout} />;
+      return <LoadingBox jobs={jobs} />;
     }
   }
 }

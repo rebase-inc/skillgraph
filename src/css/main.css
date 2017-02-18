@@ -21,11 +21,28 @@ body {
   display: block;
   position: absolute;
   bottom: 1em;
-  cursor: default;
+  right: 1em;
+  width: 16em;
+  cursor: pointer;
   text-align: center;
-  text-transform: uppercase;
-  opacity: 0.8;
-  left: 3em;
+  background-color: hsla(150, 6%, 93%, 1);
+  padding: 0.5em;
+  border-radius: 0.2em;
+  color: hsla(191, 21%, 10%, 1);
+  font-weight: 300;
+}
+
+.scanButton:hover {
+  background-color: hsla(150, 6%, 97%, 1);
+}
+
+.scanButton span:first-child {
+  font-size: 0.8em;
+}
+
+.scanButton span:last-child {
+  font-size: 0.5em;
+  opacity: 0.3;
 }
 
 .scanButton:hover {
@@ -42,30 +59,28 @@ body {
 
 .accountDisplay {
   position: absolute;
-  top: 1.5em;
-  right: 1.5em;
+  top: 1em;
+  right: 1em;
   cursor: default;
 }
 
 .accountDisplay > * {
   display: block;
   text-align: center;
-  height: 1.5em;
 }
 
-.accountDisplay > .username > * {
-  padding-left: 0.4em;
-  height: 1.5em;
-  width: 1.5em;
-  line-height: 1.5em;
-  font-size: 0.9em;
-  vertical-align: middle;
+.accountDisplay > .username {
+  font-weight: 300;
+  font-size: 1em;
+  line-height: 1.8em;
 }
 
 .accountDisplay > .logout {
-  font-size: 0.7em;
+  font-weight: 300;
+  text-transform: uppercase;
+  font-size: 0.6em;
   color: hsla(0, 70%, 60%, 1);
-  transform: translateX(0.75em);
+  cursor: pointer;
 }
 
 .accountDisplay > .logout:hover {
@@ -87,8 +102,7 @@ body {
 .loadingBox > * {
   display: block;
   text-align: center;
-  text-transform: uppercase;
-  margin: 1em;
+  margin: 1em auto;
 }
 
 .loadingBox > div {
@@ -285,7 +299,7 @@ body {
 }
 .rotate-gear-two {
   stroke: none;
-  fill: hsla(330, 4%, 70%, 1);
+  fill: hsla(44, 98%, 60%, 1);
   animation: rotate 6000ms linear infinite; animation-direction: reverse; transform-origin: 50% 50%;
 }
 .rotate-gear-three {

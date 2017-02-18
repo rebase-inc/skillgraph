@@ -69,7 +69,7 @@ class D3LanguageDisplay {
 
     modules.exit().transition().duration(REMOVE_DURATION).delay(REMOVE_DELAY).remove();
 
-    this.rank.text(selected ? selected.rank : '');
+    this.rank.text(selected ? selected.rank + 1 : '');
     this.population.text(selected ? selected.population : '');
 
     let newModules = modules.enter().append('g').attr('class', 'module');

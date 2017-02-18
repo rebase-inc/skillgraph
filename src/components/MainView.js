@@ -11,7 +11,7 @@ export default class MainView extends Component {
       <div className='App'>
         <AccountDisplay user={user} logout={logout} />
         <SkillBrowser languages={languages} modules={modules} />
-        <ScanButton scan={scan} text={'reanalyze'} />
+        { user.outOfDate ? <ScanButton scan={scan} /> : null }
       </div>
     );
   }

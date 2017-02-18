@@ -13,6 +13,9 @@ export function entities(state = new schema.AppState(), action) {
     case (actions.JOBS.SUCCESS):
       return state.setIn(['jobs'], new Immutable.Map(action.response.entities.jobs).map(j => new schema.Job(j)));
       break;
+    case (actions.SCAN.SUCCESS):
+      return state.setIn(['jobs'], new Immutable.Map(action.response.entities.jobs).map(j => new schema.Job(j)));
+      break;
     case (actions.AUTH.FAILURE):
       return state;
       break;
