@@ -8,6 +8,31 @@ const MOVE_DELAY = (oldSkills, newSkills) => oldSkills.length > newSkills.length
 
 const TWEETER_PATH = "M13.0577,25.63515 C21.0766,25.63515 25.4626,18.99155 25.4626,13.23025 C25.4626,13.04155 25.4626,12.8537 25.44985,12.6667 C26.3031067,12.0495242 27.0396522,11.2853475 27.625,10.40995 C26.8292972,10.7625315 25.9852049,10.9937544 25.1209,11.0959 C26.0310324,10.5510347 26.712205,9.69405619 27.03765,8.68445 C26.1818339,9.19228702 25.2455492,9.55018522 24.2692,9.7427 C22.9177704,8.30568514 20.7703615,7.9539707 19.0311169,8.88477794 C17.2918723,9.81558518 16.3933337,11.7974269 16.83935,13.719 C13.3338614,13.5432621 10.0678044,11.8875248 7.854,9.16385 C6.69682934,11.155948 7.2878897,13.7044306 9.2038,14.9838 C8.50998002,14.9632364 7.83128747,14.7760712 7.225,14.4381 L7.225,14.49335 C7.22556791,16.568704 8.68848876,18.3562049 10.72275,18.76715 C10.0808892,18.942199 9.4074435,18.9677877 8.75415,18.84195 C9.32530574,20.6179594 10.9620884,21.8346163 12.82735,21.86965 C11.2835248,23.0829672 9.37640058,23.7416286 7.41285,23.73965 C7.06596803,23.7389841 6.71942346,23.7179814 6.375,23.67675 C8.36879056,24.9562351 10.6886764,25.6349094 13.0577,25.63175";
 
+const tweetText = (module) => {
+  if (module.rank == 0) {
+    return 'I am the number one ranked ' + module.name + ' developer out of ' + module.population + ' on @rebaseapp!';
+  } else {
+    return 'I rank in the top ' + Math.max(0.1, Math.round(1000 * module.rank / module.population) / 10) + '% of ' + module.population + ' ' + module.name + ' developers on @rebaseapp!';
+  }
+}
+
+function centeredPopup(url, title, w, h) {
+  var dualScreenLeft = window.screenLeft != undefined ? window.screenLeft : screen.left;
+  var dualScreenTop = window.screenTop != undefined ? window.screenTop : screen.top;
+
+  var width = window.innerWidth ? window.innerWidth : document.documentElement.clientWidth ? document.documentElement.clientWidth : screen.width;
+  var height = window.innerHeight ? window.innerHeight : document.documentElement.clientHeight ? document.documentElement.clientHeight : screen.height;
+
+  var left = ((width / 2) - (w / 2)) + dualScreenLeft;
+  var top = ((height / 2) - (h / 2)) + dualScreenTop;
+  var newWindow = window.open(url, title, 'scrollbars=yes, width=' + w + ', height=' + h + ', top=' + top + ', left=' + left);
+
+  // Puts focus on the newWindow
+  if (window.focus) {
+    newWindow.focus();
+  }
+}
+
 class D3LanguageDisplay {
   constructor(parentElement, modules, selected, onHover, options) {
     this.width = options ? options.width || 700 : 700;
@@ -92,6 +117,10 @@ class D3LanguageDisplay {
     tweeters.append('path').attr('d', TWEETER_PATH);
     tweeters.append('rect').attr('x', 0).attr('y', 10).attr('width', this.width / data.length).attr('height', 30).attr('fill', 'transparent');
     tweeters = tweeters.merge(modules.select('.tweeter'));
+    tweeters.on('click', (module) => { 
+      const url = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(tweetText(module));
+      return centeredPopup(url, '', 500, 260);
+    });
     modules = modules.merge(newModules).attr('data-module', (module) => module.name);
     modules.attr('data-selected', module => selected && module.name == selected.name);
 

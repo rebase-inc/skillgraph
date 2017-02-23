@@ -7,6 +7,7 @@ export default class AccountDisplay extends Component {
     const { logout, user } = this.props;
     return (
       <div className='accountDisplay'>
+        <span className='description'>{'Your GitHub Account'}</span>
         <span className='username' onClick={window.open.bind(null, 'https://github.com/' + user.login)}>{ user.login }</span>
         <span className='logout' onClick={logout}>{'Logout'}</span>
       </div>
