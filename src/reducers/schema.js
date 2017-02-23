@@ -28,7 +28,7 @@ export class Scan extends Immutable.Record({ jobs: Immutable.List() }) {
 
 export class GithubAccount extends Immutable.Record({}) { }
 
-export class GithubUser extends Immutable.Record({ login: undefined, name: undefined }) { }
+export class GithubUser extends Immutable.Record({ login: undefined, name: undefined, outOfDate: false }) { }
 
 export class User extends Immutable.Record({ githubAccounts: new Immutable.List() }) {
   constructor(userData = {}) {

@@ -8,13 +8,13 @@ import Notification from './Notification';
 
 export default class InfoPanel extends Component {
   render() {
-    const { user, language, languages, selectLanguage } = this.props;
+    const { user, scan, language, languages, selectLanguage } = this.props;
     return (
       <div className='infoPanel'>
         <RebaseLogo />
         <AccountDisplay user={user} />
         <LanguageSelector languages={languages} selected={language} select={selectLanguage} />
-        <Notification />
+        { user.outOfDate ? <Notification scan={scan} /> : null }
       </div>
     );
   }

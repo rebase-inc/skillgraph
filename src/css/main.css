@@ -39,10 +39,10 @@ body {
 
 .accountDisplay { padding-top: 1rem; padding-bottom: 2rem; }
 .accountDisplay > * { display: block; padding-top: 0.1em; padding-bottom: 0.1em; }
-.accountDisplay > .description { font-size: 0.7em; color: hsla(208, 11%, 28%, 1); }
+.accountDisplay > .description { font-size: 0.7em; color: hsla(208, 11%, 38%, 1); }
 .accountDisplay > .username:hover { cursor: pointer; }
-.accountDisplay > .logout { text-transform: lowercase; font-size: 0.9em; color: hsla(208, 11%, 28%, 1); }
-.accountDisplay > .logout:hover { cursor: pointer; color: hsla(200, 2%, 55%, 1); }
+.accountDisplay > .logout { padding-top: 0.25rem; text-transform: lowercase; font-size: 0.7em; color: hsla(354, 46%, 48%, 1); }
+.accountDisplay > .logout:hover { cursor: pointer; color: hsla(354, 66%, 58%, 1); }
 
 .languageSelector {
   padding-top: 1em;
@@ -57,8 +57,9 @@ body {
 
 .notification { padding-left: 1rem; padding-top: 1rem; padding-bottom: 1rem; overflow: hidden; cursor: pointer; transform: translateX(-1rem); }
 .notification:hover { transition: 500ms background-color; background-color: hsla(208, 11%, 20%, 1); border-radius: 0.25rem; }
-.notification span { font-size: 0.7rem; line-height: 0.8rem; float: left; display: inline-block; padding-top: 0.1rem; padding-left: 0.5rem; max-width: 16rem; height: 1.6rem; }
+.notification span { font-size: 0.7rem; line-height: 0.8rem; float: left; display: inline-block; padding-top: 0.1rem; padding-left: 0.5rem; width: 16rem; max-width: calc(100% - 2.0rem); height: 1.6rem; }
 .notification .fire { fill: hsla(44, 98%, 60%, 1); height: 1.6rem; float: left; display: inline-block; }
+
 
 .loadingBox > * {
   display: block;

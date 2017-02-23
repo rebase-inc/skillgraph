@@ -30,7 +30,7 @@ export default class MainView extends Component {
     const modules = language.modules.map(name => this.props.modules.get(name));  
     return (
       <div className='App'>
-        <InfoPanel languages={languages} user={user} selectLanguage={this.selectLanguage} language={language} />
+        <InfoPanel languages={languages} user={user} selectLanguage={this.selectLanguage} language={language} scan={scan} />
         <LanguageDisplay modules={modules} onHover={this.selectModule} selected={module} />
       </div>
     );
